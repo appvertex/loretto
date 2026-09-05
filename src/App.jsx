@@ -97,7 +97,7 @@ const AppContent = () => {
 function App() {
   return (
     <ParishProvider>
-      <Router basename={import.meta.env.BASE_URL}>
+      <Router>
         <ScrollToTop />
         <AppContent />
       </Router>
