@@ -1,0 +1,90 @@
+/* ============================================
+   MASS TIMINGS — Minimal Schedule
+   ============================================ */
+
+.mass-schedule {
+  background: var(--cream-secondary);
+  padding: 5rem 0;
+}
+
+.mass-schedule__container { max-width: 880px; }
+
+.mass-schedule__card {
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border-beige);
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(53, 21, 27, 0.06);
+}
+
+.mass-schedule__card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-cream);
+  color: var(--burgundy-primary);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.mass-schedule__card-header svg { color: var(--gold-antique); }
+.mass-schedule__list { padding: 0 1.5rem; }
+
+.mass-schedule__row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.85fr) minmax(100px, 0.65fr) minmax(0, 1.5fr);
+  gap: 1rem;
+  align-items: baseline;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-cream);
+}
+
+.mass-schedule__row:last-child { border-bottom: 0; }
+
+.mass-schedule__day {
+  color: var(--brown-primary);
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.mass-schedule__time {
+  color: var(--burgundy-primary);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.mass-schedule__note {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.mass-schedule__special-notes {
+  padding: 1.1rem 1.5rem;
+  background: rgba(198, 161, 91, 0.08);
+  border-top: 1px solid var(--border-cream);
+}
+
+.mass-schedule__special-notes p {
+  margin: 0.25rem 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.mass-schedule__special-notes strong { color: var(--burgundy-primary); }
+
+@media (max-width: 600px) {
+  .mass-schedule { padding: 3.75rem 0; }
+  .mass-schedule__card-header,
+  .mass-schedule__special-notes { padding-left: 1.1rem; padding-right: 1.1rem; }
+  .mass-schedule__list { padding: 0 1.1rem; }
+  .mass-schedule__row { grid-template-columns: 1fr auto; gap: 0.3rem 1rem; }
+  .mass-schedule__note { grid-column: 1 / -1; }
+}

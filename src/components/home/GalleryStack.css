@@ -1,0 +1,183 @@
+/* ============================================
+   MOBILE GALLERY — Stack Reveal
+   Hidden entirely on desktop/tablet (>768px).
+   ============================================ */
+
+.gstack {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .gstack {
+    display: block;
+    padding: 0 20px;
+  }
+
+  /* ---------- Header ---------- */
+  .gstack__heading {
+    text-align: center;
+    margin-bottom: 1.4rem;
+  }
+
+  .gstack__title-heading {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--burgundy-dark);
+    margin: 0 0 0.35rem;
+  }
+
+  .gstack__subtitle {
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+    color: rgba(53, 21, 27, 0.65);
+    margin: 0;
+  }
+
+  /* ---------- Category filter chips ---------- */
+  .gstack__filters {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 4px 2px 10px;
+    margin-bottom: 0.4rem;
+  }
+
+  .gstack__filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gstack__chip {
+    flex: 0 0 auto;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--burgundy-primary);
+    background: var(--white);
+    border: 1px solid rgba(198, 161, 91, 0.45);
+    border-radius: var(--radius-full);
+    padding: 0.5rem 1.05rem;
+    min-height: 38px;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .gstack__chip--active {
+    background: var(--burgundy-primary);
+    border-color: var(--burgundy-primary);
+    color: var(--bg-ivory);
+  }
+
+  /* ---------- Photo stack ---------- */
+  .gstack__stack-area {
+    position: relative;
+    width: 100%;
+    height: calc(min(74vw, 330px) * 4 / 3 + 64px);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    margin-top: 0.5rem;
+  }
+
+  .gstack__card {
+    position: absolute;
+    top: 34px;
+    left: 50%;
+    width: min(74vw, 330px);
+    aspect-ratio: 3 / 4;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: calc(min(74vw, 330px) / -2);
+    background: var(--white);
+    border-radius: 18px;
+    padding: 8px;
+    box-shadow:
+      0 2px 6px rgba(53, 21, 27, 0.12),
+      0 22px 44px rgba(53, 21, 27, 0.22);
+    transition:
+      transform 0.48s cubic-bezier(0.22, 1.2, 0.36, 1),
+      opacity 0.4s ease;
+    will-change: transform;
+    touch-action: pan-y;
+  }
+
+  .gstack__card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 11px;
+    display: block;
+    pointer-events: none;
+  }
+
+  .gstack__card--pos1 {
+    transform: rotate(2.5deg) translate(12px, -10px) scale(0.955);
+  }
+
+  .gstack__card--pos2 {
+    transform: rotate(-3.5deg) translate(-12px, -18px) scale(0.91);
+  }
+
+  .gstack__card--pos3 {
+    transform: rotate(5deg) translate(6px, -26px) scale(0.865);
+  }
+
+  .gstack__card--exiting {
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .gstack__card--exit-left {
+    transform: translateX(-130%) rotate(-18deg) !important;
+    transition:
+      transform 0.48s cubic-bezier(0.3, 0, 0.7, 0.4),
+      opacity 0.44s ease;
+  }
+
+  .gstack__card--exit-right {
+    transform: translateX(130%) rotate(18deg) !important;
+    transition:
+      transform 0.48s cubic-bezier(0.3, 0, 0.7, 0.4),
+      opacity 0.44s ease;
+  }
+
+  /* ---------- CTA ---------- */
+  .gstack__cta {
+    text-align: center;
+    margin-top: 1.6rem;
+  }
+
+  .gstack__cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 52px;
+    padding: 0.95rem 2rem;
+    border-radius: var(--radius-full);
+    background: var(--burgundy-primary);
+    color: var(--bg-ivory);
+    font-family: var(--font-sans);
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    box-shadow: 0 12px 28px rgba(122, 31, 43, 0.28);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .gstack__cta-btn:active {
+    transform: scale(0.97);
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gstack__card,
+  .gstack__cta-btn {
+    transition: none !important;
+    animation: none !important;
+  }
+}

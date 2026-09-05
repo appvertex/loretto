@@ -1,0 +1,472 @@
+/* ==========================================================================
+   Obituary Page Styling — Our Lady of Loretto Church
+   Palette: Burgundy, Dark Burgundy, Antique Gold, Ivory Cream
+   ========================================================================== */
+
+.obituary-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ── Hero Banner Extra Styling ── */
+.obituary-hero-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(198, 161, 91, 0.15);
+  border: 1.5px solid var(--gold-antique);
+  color: var(--gold-light);
+  margin: 0 auto 0.75rem;
+  box-shadow: 0 0 20px rgba(198, 161, 91, 0.3);
+}
+
+/* ── Controls Strip (Search & Filter) ── */
+.obituary-controls-card {
+  background: var(--cream);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: var(--shadow-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .obituary-controls-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.obituary-search-group {
+  position: relative;
+  flex: 1;
+  max-width: 460px;
+}
+
+.obituary-search-input {
+  width: 100%;
+  padding: 0.7rem 2.5rem 0.7rem 2.5rem;
+  background: var(--bg-ivory);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--brown-primary);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.obituary-search-input:focus {
+  border-color: var(--gold-antique);
+  box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.2);
+}
+
+.obituary-search-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.obituary-clear-btn {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.obituary-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.obituary-select {
+  padding: 0.65rem 1rem;
+  background: var(--bg-ivory);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--brown-primary);
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+.obituary-count-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gold-antique);
+  background: rgba(198, 161, 91, 0.12);
+  border: 1px solid var(--border-gold);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* ── Memorial Cards Grid ── */
+.obituary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
+  gap: 1.75rem;
+  margin-bottom: 3.5rem;
+}
+
+/* ── Memorial Card ── */
+.obituary-card {
+  background: var(--bg-ivory);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 24px rgba(53, 21, 27, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.obituary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(53, 21, 27, 0.12);
+  border-color: var(--gold-antique);
+}
+
+/* Card Header Banner with Candle Motif */
+.obituary-card__banner {
+  background: linear-gradient(135deg, #35151B 0%, #4A171F 100%);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-bottom: 1.5px solid var(--gold-antique);
+}
+
+.obituary-card__rip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(198, 161, 91, 0.2);
+  border: 1px solid var(--gold-antique);
+  color: var(--gold-light);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+}
+
+.obituary-card__ward-badge {
+  font-size: 0.75rem;
+  color: var(--gold-pale);
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* Card Main Body */
+.obituary-card__body {
+  padding: 1.5rem 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.obituary-card__profile {
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.obituary-card__photo-frame {
+  position: relative;
+  width: 160px;
+  height: 195px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid var(--gold-antique);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+  background: var(--burgundy-dark);
+}
+
+.obituary-card__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.obituary-card__photo-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-light);
+  background: radial-gradient(circle, #4A171F 0%, #2A0F14 100%);
+  gap: 0.25rem;
+}
+
+.obituary-card__photo-initials {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.obituary-card__identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.obituary-card__konkani-name {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--brown-primary);
+  line-height: 1.25;
+  margin-bottom: 0.25rem;
+}
+
+.obituary-card__english-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.6rem;
+}
+
+.obituary-card__meta-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.obituary-card__age-tag,
+.obituary-card__date-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--cream);
+  border: 1px solid var(--border-gold);
+  color: var(--brown-primary);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Funeral details box */
+.obituary-card__funeral-box {
+  background: var(--cream);
+  border-left: 3px solid var(--gold-antique);
+  padding: 0.85rem 1rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: 1rem;
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+.obituary-card__funeral-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--gold-antique);
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Family details */
+.obituary-card__family {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.55;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-gold);
+}
+
+.obituary-card__family-title {
+  font-weight: 700;
+  color: var(--brown-primary);
+  font-size: 0.78rem;
+  margin-bottom: 0.2rem;
+}
+
+/* Tribute message */
+.obituary-card__tribute {
+  font-style: italic;
+  font-size: 0.83rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Card Footer with Candle Button */
+.obituary-card__footer {
+  background: var(--cream);
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.obituary-candle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #7A1F2B 0%, #4A171F 100%);
+  color: var(--gold-pale);
+  border: 1px solid var(--gold-antique);
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(122, 31, 43, 0.25);
+}
+
+.obituary-candle-btn:hover {
+  background: var(--burgundy-primary);
+  transform: scale(1.04);
+  box-shadow: 0 0 16px rgba(198, 161, 91, 0.4);
+}
+
+.obituary-candle-count {
+  font-size: 0.8rem;
+  color: var(--brown-primary);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Empty State */
+.obituary-empty {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  background: var(--cream);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  color: var(--text-muted);
+  margin-bottom: 3rem;
+}
+
+/* Footer Banner */
+.obituary-notice-banner {
+  background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy-primary) 100%);
+  color: var(--bg-ivory);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border: 1px solid var(--gold-antique);
+  box-shadow: var(--shadow-med);
+  margin-bottom: 2rem;
+}
+
+.obituary-notice-banner h3 {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  color: var(--gold-light);
+  margin-bottom: 0.75rem;
+}
+
+.obituary-notice-banner p {
+  font-size: 0.92rem;
+  max-width: 680px;
+  margin: 0 auto 1.25rem;
+  color: var(--gold-light);
+  opacity: 0.95;
+  line-height: 1.65;
+}
+
+/* ── Mobile & Tablet Responsiveness ── */
+@media (max-width: 768px) {
+  .obituary-wrapper {
+    padding: 0 0.75rem;
+  }
+
+  .obituary-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .obituary-controls-card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .obituary-card__profile {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .obituary-card__photo-frame {
+    width: 150px;
+    height: 180px;
+    margin: 0 auto;
+  }
+
+  .obituary-card__identity {
+    width: 100%;
+  }
+
+  .obituary-card__meta-tags {
+    justify-content: center;
+  }
+
+  .obituary-card__funeral-box {
+    text-align: left;
+  }
+
+  .obituary-card__family {
+    text-align: left;
+  }
+
+  .obituary-filter-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .obituary-select {
+    flex: 1;
+  }
+
+  .obituary-notice-banner {
+    padding: 1.75rem 1rem;
+  }
+
+  .obituary-notice-banner h3 {
+    font-size: 1.35rem;
+  }
+}

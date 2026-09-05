@@ -1,0 +1,116 @@
+/* ============================================
+   OUR PATRONESS SECTION — Quiet, Premium Layout
+   ============================================ */
+
+.patroness {
+  background: #35151b;
+  color: var(--bg-ivory);
+  padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.patroness__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.72fr);
+  gap: clamp(2.5rem, 7vw, 7rem);
+  align-items: center;
+}
+
+.patroness__content { max-width: 670px; }
+
+.patroness__title {
+  margin: 0.65rem 0 1.5rem;
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--bg-ivory);
+}
+
+.patroness__quote {
+  margin: 0 0 1.65rem;
+  padding: 0;
+  border: 0;
+  color: var(--gold-light);
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+.patroness__text {
+  max-width: 620px;
+  margin: 0 0 1rem;
+  color: rgba(250, 247, 240, 0.82);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.patroness__feast-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(221, 187, 123, 0.38);
+}
+
+.patroness__feast-info {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.patroness__feast-label {
+  color: var(--gold-light);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.patroness__feast-date {
+  color: var(--bg-ivory);
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.patroness__cta .btn--gold {
+  min-height: 46px;
+  padding: 0.75rem 1.2rem;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.patroness__image-container { position: relative; }
+
+.patroness__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 860px) {
+  .patroness__grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .patroness__image-container { max-width: 520px; }
+}
+
+@media (max-width: 540px) {
+  .patroness { padding: 4rem 0; }
+
+  .patroness__title { font-size: 2.6rem; }
+
+  .patroness__feast-info {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

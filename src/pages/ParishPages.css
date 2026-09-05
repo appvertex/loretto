@@ -1,0 +1,722 @@
+/* ============================================
+   PARISH PRIEST & PASTORAL TEAM PAGES (Redesign)
+   ============================================ */
+
+.priest-page-section {
+  padding: clamp(3rem, 6vw, 5.5rem) 0;
+  background: linear-gradient(180deg, #FAF7F0 0%, #F5ECE0 100%);
+}
+
+/* --------------------------------------------
+   MAIN PRIEST CARD
+   -------------------------------------------- */
+.priest-main-card {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 3rem;
+  background: #FFFFFF;
+  border-radius: 24px;
+  border: 1px solid rgba(198, 161, 91, 0.28);
+  box-shadow: 0 18px 50px rgba(53, 21, 27, 0.08);
+  overflow: hidden;
+  margin-bottom: 4rem;
+}
+
+/* Left Sidebar */
+.priest-sidebar {
+  background: linear-gradient(180deg, #FFFDF9 0%, #FDF9F0 100%);
+  border-right: 1px solid rgba(198, 161, 91, 0.2);
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.priest-image-wrap {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  margin-bottom: 1.5rem;
+}
+
+.priest-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--gold-antique);
+  box-shadow: 0 12px 30px rgba(53, 21, 27, 0.16);
+  position: relative;
+  z-index: 2;
+}
+
+.priest-image-border {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px dashed var(--gold-antique);
+  opacity: 0.5;
+}
+
+.priest-info-header {
+  margin-bottom: 2rem;
+}
+
+.priest-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--burgundy-primary);
+  background: rgba(122, 31, 43, 0.08);
+  border: 1px solid rgba(122, 31, 43, 0.2);
+  padding: 0.35rem 0.95rem;
+  border-radius: 999px;
+  margin-bottom: 0.85rem;
+}
+
+.priest-fullname {
+  font-family: var(--font-serif);
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  line-height: 1.22;
+  margin-bottom: 0.35rem;
+}
+
+.priest-prefix {
+  font-size: 1.25rem;
+  color: var(--gold-antique);
+  font-weight: 500;
+}
+
+.priest-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin: 0;
+}
+
+.priest-quick-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.priest-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.priest-action-btn--primary {
+  background: var(--burgundy-primary);
+  color: #FFFFFF;
+  box-shadow: 0 6px 18px rgba(122, 31, 43, 0.2);
+}
+
+.priest-action-btn--primary:hover {
+  background: var(--burgundy-dark);
+  transform: translateY(-1px);
+}
+
+.priest-action-btn--outline {
+  border: 1px solid var(--border-gold);
+  color: var(--burgundy-dark);
+  background: #FFFFFF;
+}
+
+.priest-action-btn--outline:hover {
+  border-color: var(--gold-antique);
+  background: var(--cream-secondary);
+  color: var(--burgundy-primary);
+}
+
+/* Right Content Body */
+.priest-content-body {
+  padding: 3.5rem 3.5rem 3.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.priest-message-header {
+  margin-bottom: 1.75rem;
+}
+
+.priest-label {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-antique);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.priest-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 2.6vw, 2.3rem);
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  margin-bottom: 0.75rem;
+}
+
+.gold-accent-line {
+  width: 56px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-antique), transparent);
+}
+
+/* Letter Quote Box */
+.priest-letter-wrapper {
+  position: relative;
+  background: rgba(250, 247, 240, 0.65);
+  border-radius: 16px;
+  border: 1px solid rgba(198, 161, 91, 0.2);
+  padding: 2.25rem 2.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.priest-quote-icon {
+  color: rgba(198, 161, 91, 0.35);
+  margin-bottom: 1rem;
+}
+
+.priest-letter-text p {
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 1.35vw, 1.18rem);
+  font-style: italic;
+  line-height: 1.88;
+  color: var(--text-dark);
+  margin-bottom: 1.75rem;
+}
+
+/* Signature Block */
+.priest-signature-block {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px dashed rgba(198, 161, 91, 0.3);
+}
+
+.signature-valediction {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--gold-antique);
+  margin-bottom: 0.2rem;
+}
+
+.signature-name {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  margin-bottom: 0.15rem;
+}
+
+.signature-title {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --------------------------------------------
+   ASSISTANT PARISH PRIEST SECTION
+   -------------------------------------------- */
+.assistant-section-wrap {
+  margin-bottom: 3.5rem;
+}
+
+.section-title-wrap {
+  text-align: center;
+  margin-bottom: 2.25rem;
+}
+
+.section-title-tag {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-antique);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.section-title-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  margin-bottom: 0.6rem;
+}
+
+.section-title-wrap .gold-accent-line {
+  margin: 0 auto;
+}
+
+.assistant-main-card {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2.5rem;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid rgba(198, 161, 91, 0.22);
+  padding: 2.5rem;
+  box-shadow: 0 12px 35px rgba(53, 21, 27, 0.05);
+}
+
+.assistant-image-col {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.assistant-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3.5px solid var(--gold-antique);
+  box-shadow: 0 10px 22px rgba(53, 21, 27, 0.12);
+  margin-bottom: 1rem;
+}
+
+.assistant-role-badge {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-antique);
+  background: rgba(198, 161, 91, 0.12);
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  margin-bottom: 0.4rem;
+}
+
+.assistant-name {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  margin: 0;
+}
+
+.assistant-prefix {
+  font-size: 1.1rem;
+  color: var(--gold-antique);
+}
+
+.assistant-details-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.assistant-bio-heading {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  margin-bottom: 0.6rem;
+}
+
+.assistant-bio-text {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.assistant-highlights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: 12px;
+  background: var(--cream-secondary);
+  border: 1px solid rgba(198, 161, 91, 0.18);
+}
+
+.highlight-icon {
+  color: var(--burgundy-primary);
+  flex-shrink: 0;
+}
+
+.highlight-item strong {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--burgundy-dark);
+}
+
+.highlight-item span {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  color: var(--gold-antique);
+}
+
+/* --------------------------------------------
+   PASTORAL CARE & CONTACT STRIP
+   -------------------------------------------- */
+.priest-care-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.care-strip-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.15rem;
+  padding: 1.75rem;
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(198, 161, 91, 0.2);
+  box-shadow: 0 8px 24px rgba(53, 21, 27, 0.04);
+}
+
+.care-icon {
+  color: var(--burgundy-primary);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.care-info h4 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  margin-bottom: 0.4rem;
+}
+
+.care-info p {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --------------------------------------------
+   RESPONSIVE BREAKPOINTS (Desktop & Mobile)
+   -------------------------------------------- */
+@media (max-width: 960px) {
+  .priest-main-card {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .priest-sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(198, 161, 91, 0.2);
+    padding: 2.5rem 2rem;
+  }
+
+  .priest-content-body {
+    padding: 2.5rem 2rem;
+  }
+
+  .assistant-main-card {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .assistant-highlights-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .priest-care-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 580px) {
+  .priest-content-body {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .priest-letter-wrapper {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .priest-action-btn {
+    width: 100%;
+  }
+
+  .assistant-main-card {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+/* ============================================
+   PARISH COUNCIL PAGE (Modern Redesign)
+   ============================================ */
+
+.council-page-section {
+  padding: clamp(3rem, 6vw, 5.5rem) 0;
+  background: linear-gradient(180deg, #FAF7F0 0%, #F5ECE0 100%);
+}
+
+.council-intro-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid rgba(198, 161, 91, 0.25);
+  padding: clamp(2rem, 4vw, 3rem);
+  box-shadow: 0 14px 40px rgba(53, 21, 27, 0.06);
+  margin-bottom: 3.5rem;
+  text-align: center;
+}
+
+.council-intro-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--burgundy-primary);
+  background: rgba(122, 31, 43, 0.08);
+  border: 1px solid rgba(122, 31, 43, 0.18);
+  padding: 0.35rem 1.1rem;
+  border-radius: 999px;
+  margin-bottom: 0.85rem;
+}
+
+.council-intro-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  margin-bottom: 0.75rem;
+}
+
+.council-intro-text {
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 1.3vw, 1.08rem);
+  color: var(--text-muted);
+  line-height: 1.75;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Executive Grid */
+.council-exec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.75rem;
+  margin-bottom: 4rem;
+}
+
+.council-member-card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  border: 1px solid rgba(198, 161, 91, 0.22);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(53, 21, 27, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.council-member-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 45px rgba(53, 21, 27, 0.1);
+  border-color: rgba(198, 161, 91, 0.48);
+}
+
+.council-member-card--president {
+  grid-column: 1 / -1;
+  max-width: 580px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FDFBF7 100%);
+  border: 2px solid var(--gold-antique);
+}
+
+.council-avatar-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1.15rem;
+}
+
+.council-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--gold-antique);
+  box-shadow: 0 8px 20px rgba(53, 21, 27, 0.12);
+}
+
+.council-role-badge {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--burgundy-primary);
+  background: rgba(122, 31, 43, 0.08);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  margin-bottom: 0.5rem;
+}
+
+.council-member-name {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  margin-bottom: 0.25rem;
+}
+
+.council-member-position {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--gold-antique);
+  font-weight: 600;
+}
+
+/* Commissions Section */
+.commissions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.commission-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(198, 161, 91, 0.2);
+  padding: 1.75rem;
+  box-shadow: 0 8px 24px rgba(53, 21, 27, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.commission-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(53, 21, 27, 0.08);
+}
+
+.commission-icon-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(122, 31, 43, 0.08);
+  color: var(--burgundy-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.commission-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  margin-bottom: 0.45rem;
+}
+
+.commission-desc {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Bottom Information Strip */
+.council-info-strip {
+  background: linear-gradient(135deg, var(--burgundy-dark) 0%, #4a151e 100%);
+  color: #FFFFFF;
+  border-radius: 20px;
+  padding: 2.25rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  box-shadow: 0 14px 35px rgba(53, 21, 27, 0.2);
+}
+
+.council-info-text h3 {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--gold-light);
+  margin-bottom: 0.35rem;
+}
+
+.council-info-text p {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  color: rgba(250, 247, 240, 0.88);
+  margin: 0;
+  line-height: 1.55;
+}
+
+.council-info-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold-antique));
+  color: var(--burgundy-dark);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(198, 161, 91, 0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.council-info-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(198, 161, 91, 0.4);
+}
+
+@media (max-width: 768px) {
+  .council-info-strip {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.75rem 1.5rem;
+  }
+}

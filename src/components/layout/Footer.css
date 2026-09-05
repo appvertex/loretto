@@ -1,0 +1,444 @@
+/* ============================================
+   EMERALD SANCTUARY / ROYAL ARCH FOOTER
+   Option 4: Dual-Tone Soft Cream & Dark Burgundy
+   Main Footer: Soft Cream (#F7F3EB)
+   Bottom Bar: Dark Burgundy (#35151B)
+   Accents: Antique Gold (#C6A15B) & Primary Burgundy (#7A1F2B)
+   ============================================ */
+
+.footer {
+  background-color: var(--cream-soft);
+  color: var(--burgundy-dark);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  border-top: none;
+}
+
+/* Royal Arch Top Boundary with Cathedral Notch */
+.footer__arch-top {
+  width: 100%;
+  line-height: 0;
+  margin-bottom: 1.25rem;
+  position: relative;
+  z-index: 2;
+  background-color: transparent;
+}
+
+.footer__arch-top svg {
+  width: 100%;
+  height: 42px;
+  display: block;
+}
+
+.footer__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 880px;
+  margin: 0 auto;
+  padding-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Architectural Background Cathedral Line-Art Illustration */
+.footer__cathedral-bg {
+  position: absolute;
+  right: -6%;
+  bottom: 0;
+  width: 420px;
+  height: 320px;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Cross Motif & Architectural Medallion Logo Frame */
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.footer__medallion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: -1.1rem;
+  margin-bottom: 0.85rem;
+  padding: 8px;
+  border-radius: 50%;
+  background: var(--cream-soft);
+  border: 1.5px solid var(--gold-antique);
+  box-shadow: 0 6px 24px rgba(53, 21, 27, 0.12), 0 0 16px rgba(198, 161, 91, 0.2);
+  transition: transform var(--transition-med), box-shadow var(--transition-med);
+}
+
+.footer__brand:hover .footer__medallion {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(53, 21, 27, 0.18), 0 0 22px rgba(198, 161, 91, 0.3);
+}
+
+.footer__cross-motif {
+  margin-bottom: 0.25rem;
+  opacity: 0.95;
+  transition: transform var(--transition-med);
+}
+
+.footer__logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: var(--white);
+  padding: 3px;
+  border: 1px solid var(--border-gold);
+}
+
+/* Decorative Gold Lines Around Church Title */
+.footer__title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 0.3rem;
+  width: 100%;
+}
+
+.footer__title-line {
+  display: inline-block;
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-antique));
+}
+
+.footer__title-line--right {
+  background: linear-gradient(90deg, var(--gold-antique), transparent);
+}
+
+.footer__title {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--burgundy-dark);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.footer__subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-antique);
+  opacity: 0.95;
+}
+
+/* Horizontal Navigation Links */
+.footer__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.85rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.footer__nav a {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--burgundy-dark);
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 280ms ease;
+}
+
+/* Gold Underline Expand Animation */
+.footer__nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1.5px;
+  background: var(--gold-antique);
+  transition: width 280ms ease, left 280ms ease;
+  border-radius: 1px;
+}
+
+.footer__nav a:hover {
+  color: var(--burgundy-primary);
+}
+
+.footer__nav a:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Social Icons */
+.footer__social {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.footer__social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--border-gold);
+  color: var(--burgundy-dark);
+  transition: border-color 280ms ease, color 280ms ease, transform 280ms ease, background-color 280ms ease, box-shadow 280ms ease;
+}
+
+.footer__social-link:hover {
+  background: var(--burgundy-primary);
+  border-color: var(--gold-antique);
+  color: var(--bg-ivory);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 16px rgba(122, 31, 43, 0.25);
+}
+
+/* Thin Muted Gold Divider Line */
+.footer__gold-line {
+  width: 100%;
+  max-width: 540px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(198, 161, 91, 0.45) 50%, transparent 100%);
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Dark Burgundy Bottom Copyright Bar */
+.footer__bottom-bar {
+  background-color: var(--burgundy-dark);
+  border-top: 1px solid var(--border-gold);
+  padding: 0.95rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer__copyright {
+  font-size: 0.78rem;
+  color: rgba(250, 247, 240, 0.8);
+  letter-spacing: 0.01em;
+}
+
+.footer__credit {
+  font-size: 0.78rem;
+  color: rgba(250, 247, 240, 0.8);
+}
+
+.footer__credit-brand {
+  font-weight: 700;
+  color: var(--gold-antique);
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(198, 161, 91, 0.45);
+  transition: color 280ms ease, text-decoration-color 280ms ease;
+}
+
+.footer__credit-brand:hover {
+  color: var(--gold-light);
+  text-decoration-color: var(--gold-light);
+}
+
+/* Compact & Minimal Mobile Breakpoints */
+@media (max-width: 768px) {
+  .footer__arch-top {
+    margin-bottom: 1rem;
+  }
+
+  .footer__arch-top svg {
+    height: 28px;
+  }
+
+  .footer__content {
+    padding-bottom: 1.5rem;
+  }
+
+  .footer__cathedral-bg {
+    right: 50%;
+    transform: translateX(50%);
+    width: 260px;
+    height: 200px;
+    opacity: 0.08;
+  }
+
+  .footer__brand {
+    margin-bottom: 1.25rem;
+  }
+
+  .footer__medallion {
+    margin-top: -0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 6px;
+  }
+
+  .footer__cross-motif svg {
+    width: 16px;
+    height: 20px;
+  }
+
+  .footer__logo {
+    width: 46px;
+    height: 46px;
+  }
+
+  .footer__title-wrapper {
+    gap: 0.6rem;
+  }
+
+  .footer__title-line {
+    width: 24px;
+  }
+
+  .footer__title {
+    font-size: 1.35rem;
+  }
+
+  .footer__subtitle {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+  }
+
+  .footer__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .footer__nav a {
+    font-size: 0.75rem;
+  }
+
+  .footer__social {
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .footer__social-link {
+    width: 36px;
+    height: 36px;
+  }
+
+  .footer__gold-line {
+    margin-bottom: 0.25rem;
+  }
+
+  .footer__bottom-bar {
+    padding: 0.85rem 0;
+  }
+
+  .footer__copyright,
+  .footer__credit {
+    font-size: 0.72rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer__arch-top {
+    margin-bottom: 0.75rem;
+  }
+
+  .footer__arch-top svg {
+    height: 22px;
+  }
+
+  .footer__content {
+    padding-bottom: 1rem;
+  }
+
+  .footer__brand {
+    margin-bottom: 1rem;
+  }
+
+  .footer__medallion {
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 5px;
+  }
+
+  .footer__logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .footer__title-wrapper {
+    gap: 0.4rem;
+  }
+
+  .footer__title-line {
+    width: 16px;
+  }
+
+  .footer__title {
+    font-size: 1.2rem;
+  }
+
+  .footer__subtitle {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+  }
+
+  .footer__nav {
+    gap: 0.4rem 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .footer__nav a {
+    font-size: 0.72rem;
+  }
+
+  .footer__social {
+    margin-bottom: 1rem;
+  }
+
+  .footer__social-link {
+    width: 34px;
+    height: 34px;
+  }
+
+  .footer__bottom-bar {
+    padding: 0.75rem 0;
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.35rem;
+  }
+}
