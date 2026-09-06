@@ -5,8 +5,7 @@ import { Calendar, ArrowRight, Bell, ChevronRight, FileText, Sparkles } from 'lu
 
 import HeroSlider from '../components/home/HeroSlider';
 import WelcomeSection from '../components/home/WelcomeSection';
-import OurPatronessSection from '../components/home/OurPatronessSection';
-import PriestMessageSection from '../components/home/PriestMessageSection';
+import PatronessAndPriestSection from '../components/home/PatronessAndPriestSection';
 import SpecialCelebrationsSection from '../components/home/SpecialCelebrationsSection';
 import GallerySection from '../components/home/GallerySection';
 import MassTimesStrip from '../components/home/MassTimesStrip';
@@ -48,11 +47,8 @@ const HomePage = () => {
       {/* 2. Welcome to Our Lady of Loretto (Church introduction) */}
       <WelcomeSection />
 
-      {/* 3. Our Patroness (Devotion & History highlight) */}
-      <OurPatronessSection />
-
-      {/* 4. Message from Parish Priest (Pastoral greeting) */}
-      <PriestMessageSection />
+      {/* 3 & 4. Our Patroness + Parish Priest — unified split section */}
+      <PatronessAndPriestSection />
 
       {/* 5. Editorial Bento Grid: News & Announcements */}
       <section className="bento-news-section" aria-label="Parish News and Announcements">
