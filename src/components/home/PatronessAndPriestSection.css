@@ -180,8 +180,8 @@
 .combined-section__priest-portrait-frame {
   position: relative;
   flex-shrink: 0;
-  width: 140px;
-  height: 175px;
+  width: 180px;
+  height: 225px;
 }
 
 .combined-section__priest-photo {
@@ -210,7 +210,7 @@
 }
 
 .combined-section__priest-desig {
-  font-size: 0.68rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -219,13 +219,13 @@
 
 .combined-section__priest-name {
   font-family: var(--font-serif, Georgia, serif);
-  font-size: 1.15rem;
+  font-size: 1.45rem;
   color: #35151b;
   font-weight: 600;
 }
 
 .combined-section__priest-title {
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   color: rgba(53, 21, 27, 0.65);
 }
 
