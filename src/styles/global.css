@@ -372,7 +372,7 @@ p {
 .page-hero {
   min-height: 320px;
   height: auto;
-  background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy-primary) 100%);
+  background: #35151b;
   display: flex;
   align-items: center;
   position: relative;
@@ -394,12 +394,24 @@ p {
   position: absolute;
   inset: 0;
   background: url('/lorettochurch/images/hero-exterior.jpg') center/cover no-repeat;
-  opacity: 0.15;
+  opacity: 0.42;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(35, 10, 15, 0.72) 0%,
+    rgba(53, 21, 27, 0.60) 50%,
+    rgba(35, 10, 15, 0.75) 100%
+  );
 }
 
 .page-hero__content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   text-align: center;
   width: 100%;
 }
