@@ -275,8 +275,9 @@ export const ParishProvider = ({ children }) => {
 
   // Auth helper methods
   const loginAdmin = (passcode) => {
-    const storedPasscode = localStorage.getItem('loretto_admin_passcode') || 'admin123';
-    if (passcode === storedPasscode) {
+    const defaultPasscode = import.meta.env.VITE_ADMIN_PASSCODE || '';
+    const storedPasscode = localStorage.getItem('loretto_admin_passcode') || defaultPasscode;
+    if (storedPasscode && passcode === storedPasscode) {
       setIsAdminAuthenticated(true);
       sessionStorage.setItem(STORAGE_KEYS.AUTH, 'true');
       return true;

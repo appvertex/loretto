@@ -20,7 +20,7 @@ const AdminLogin = () => {
 
     const success = loginAdmin(passcode);
     if (!success) {
-      setError('Incorrect passcode. Try default: admin123');
+      setError('Incorrect passcode. Please check your admin passcode.');
     }
   };
 
@@ -69,9 +69,6 @@ const AdminLogin = () => {
                   }}
                 />
               </div>
-              <small style={{ color: 'var(--brown-muted)', display: 'block', marginTop: '0.5rem' }}>
-                Default Passcode: <strong style={{ color: 'var(--brown-primary)' }}>admin123</strong>
-              </small>
             </div>
 
             <button type="submit" className="admin-btn admin-btn--primary" style={{ width: '100%', justifyContent: 'center', marginTop: '1rem', padding: '0.8rem' }}>
