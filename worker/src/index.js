@@ -193,7 +193,7 @@ export default {
   async fetch(request, env, _ctx) {
     const url = new URL(request.url);
     const pathname = url.pathname;
-    const isApiRequest = pathname.startsWith('/api/') || pathname.startsWith('/images/');
+    const isApiRequest = pathname.startsWith('/api/');
 
     // Handle CORS Preflight
     if (request.method === 'OPTIONS') {
@@ -300,12 +300,20 @@ export default {
       // R2 IMAGE SERVING ROUTE: GET /images/:key
       // ----------------------------------------------------
       if (pathname.startsWith('/images/') && request.method === 'GET') {
+        if (!env.IMAGES_BUCKET && env.ASSETS) {
+          return env.ASSETS.fetch(request);
+        }
+
         const key = pathname.replace('/images/', '');
         if (!env.IMAGES_BUCKET) {
           return jsonResponse({ error: 'R2 Bucket not configured' }, 500);
         }
         const object = await env.IMAGES_BUCKET.get(key);
         if (!object) {
+          if (env.ASSETS) {
+            return env.ASSETS.fetch(request);
+          }
+
           return new Response('Image not found', { status: 404 });
         }
         const headers = new Headers();
