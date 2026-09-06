@@ -5,7 +5,7 @@ import { news } from '../data/news';
 import { events } from '../data/events';
 import { obituaries } from '../data/obituaries';
 
-const WORKER_API_URL = import.meta.env.VITE_WORKER_API_URL || '';
+const WORKER_API_URL = import.meta.env.VITE_WORKER_API_URL || 'https://loretto-church-api.canara-billing-monorepo.workers.dev';
 
 /**
  * Helper to fetch from Cloudflare Worker API with timeout and fallback

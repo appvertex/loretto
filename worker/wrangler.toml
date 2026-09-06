@@ -12,3 +12,7 @@ database_id = "55192a5e-0e1a-4d7c-b956-5e1635e10bf6"
 # [[r2_buckets]]
 # binding = "IMAGES_BUCKET"
 # bucket_name = "loretto-images"
+
+# Environment Variables (Overridden by secrets set via Dashboard or CLI)
+[vars]
+ADMIN_PASSCODE = "loretto2026"
