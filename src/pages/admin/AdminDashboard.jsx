@@ -32,6 +32,7 @@ import {
   LogOut,
   RotateCcw,
   Key,
+  UploadCloud,
   Menu,
   X,
   ShieldCheck,
@@ -86,7 +87,7 @@ const navItems = [
 ];
 
 const AdminDashboard = () => {
-  const { isAdminAuthenticated, logoutAdmin, resetToDefaults, changeAdminPasscode, organizations } = useParishData();
+  const { isAdminAuthenticated, logoutAdmin, resetToDefaults, changeAdminPasscode, publishSiteContent, organizations } = useParishData();
   const [activeTab, setActiveTab] = useState('priest');
   const [selectedOrgSlug, setSelectedOrgSlug] = useState(null);
   const [isParishDropdownOpen, setIsParishDropdownOpen] = useState(true);
@@ -94,8 +95,13 @@ const AdminDashboard = () => {
   const [isOrgsDropdownOpen, setIsOrgsDropdownOpen] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [showPasscodeModal, setShowPasscodeModal] = useState(false);
+  const [currentPasscode, setCurrentPasscode] = useState('');
   const [newPasscode, setNewPasscode] = useState('');
+  const [confirmPasscode, setConfirmPasscode] = useState('');
   const [passcodeNotice, setPasscodeNotice] = useState('');
+  const [passcodeError, setPasscodeError] = useState('');
+  const [isChangingPasscode, setIsChangingPasscode] = useState(false);
+  const [isPublishingContent, setIsPublishingContent] = useState(false);
 
   if (!isAdminAuthenticated) {
     return <AdminLogin />;
@@ -119,16 +125,60 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleChangePasscode = (e) => {
+  const handleChangePasscode = async (e) => {
     e.preventDefault();
-    if (!newPasscode.trim()) return;
-    changeAdminPasscode(newPasscode.trim());
-    setPasscodeNotice('Passcode updated successfully!');
+    setPasscodeNotice('');
+    setPasscodeError('');
+
+    const trimmedCurrentPasscode = currentPasscode.trim();
+    const trimmedNewPasscode = newPasscode.trim();
+
+    if (!trimmedCurrentPasscode || !trimmedNewPasscode || !confirmPasscode.trim()) {
+      setPasscodeError('Please fill in all passcode fields.');
+      return;
+    }
+
+    if (trimmedNewPasscode.length < 6) {
+      setPasscodeError('New passcode must be at least 6 characters.');
+      return;
+    }
+
+    if (trimmedNewPasscode !== confirmPasscode.trim()) {
+      setPasscodeError('New passcode and confirmation do not match.');
+      return;
+    }
+
+    setIsChangingPasscode(true);
+    const result = await changeAdminPasscode(trimmedCurrentPasscode, trimmedNewPasscode);
+    setIsChangingPasscode(false);
+
+    if (!result.success) {
+      setPasscodeError(result.message || 'Unable to update passcode.');
+      return;
+    }
+
+    setPasscodeNotice(result.message || 'Passcode updated successfully!');
+    setCurrentPasscode('');
     setNewPasscode('');
+    setConfirmPasscode('');
     setTimeout(() => {
       setPasscodeNotice('');
+      setPasscodeError('');
       setShowPasscodeModal(false);
     }, 2000);
+  };
+
+  const handlePublishContent = async () => {
+    setIsPublishingContent(true);
+    const result = await publishSiteContent();
+    setIsPublishingContent(false);
+
+    if (result.success) {
+      alert('Content published to D1. Open incognito and refresh to see the latest content.');
+      return;
+    }
+
+    alert(result.message || 'Could not publish content. Please log in again and retry.');
   };
 
   return (
@@ -306,6 +356,11 @@ const AdminDashboard = () => {
           <span className="admin-sidebar__section-label" style={{ paddingLeft: 0, marginBottom: '0.2rem' }}>System Controls</span>
           <button
             onClick={() => {
+              setCurrentPasscode('');
+              setNewPasscode('');
+              setConfirmPasscode('');
+              setPasscodeNotice('');
+              setPasscodeError('');
               setShowPasscodeModal(true);
               setIsMobileSidebarOpen(false);
             }}
@@ -313,6 +368,15 @@ const AdminDashboard = () => {
           >
             <Key size={15} />
             <span>Change Passcode</span>
+          </button>
+
+          <button
+            onClick={handlePublishContent}
+            className="admin-sidebar__action-btn admin-sidebar__action-btn--publish"
+            disabled={isPublishingContent}
+          >
+            <UploadCloud size={15} />
+            <span>{isPublishingContent ? 'Publishing...' : 'Publish Content'}</span>
           </button>
 
           <button
@@ -387,6 +451,20 @@ const AdminDashboard = () => {
               <div className="admin-alert admin-alert--success">{passcodeNotice}</div>
             ) : (
               <form onSubmit={handleChangePasscode}>
+                {passcodeError && (
+                  <div className="admin-alert admin-alert--error" style={{ marginBottom: '1rem' }}>{passcodeError}</div>
+                )}
+                <div className="admin-form-group">
+                  <label>Current Passcode</label>
+                  <input
+                    type="password"
+                    className="admin-form-control"
+                    placeholder="Enter current passcode"
+                    value={currentPasscode}
+                    onChange={(e) => setCurrentPasscode(e.target.value)}
+                    required
+                  />
+                </div>
                 <div className="admin-form-group">
                   <label>New Passcode</label>
                   <input
@@ -398,9 +476,22 @@ const AdminDashboard = () => {
                     required
                   />
                 </div>
+                <div className="admin-form-group">
+                  <label>Confirm New Passcode</label>
+                  <input
+                    type="password"
+                    className="admin-form-control"
+                    placeholder="Re-enter new passcode"
+                    value={confirmPasscode}
+                    onChange={(e) => setConfirmPasscode(e.target.value)}
+                    required
+                  />
+                </div>
                 <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-                  <button type="submit" className="admin-btn admin-btn--primary" style={{ flex: 1 }}>Update</button>
-                  <button type="button" onClick={() => setShowPasscodeModal(false)} className="admin-btn admin-btn--secondary">Cancel</button>
+                  <button type="submit" className="admin-btn admin-btn--primary" style={{ flex: 1 }} disabled={isChangingPasscode}>
+                    {isChangingPasscode ? 'Updating...' : 'Update'}
+                  </button>
+                  <button type="button" onClick={() => setShowPasscodeModal(false)} className="admin-btn admin-btn--secondary" disabled={isChangingPasscode}>Cancel</button>
                 </div>
               </form>
             )}

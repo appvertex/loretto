@@ -193,6 +193,17 @@
   color: var(--brown-primary);
 }
 
+.admin-sidebar__action-btn--publish {
+  background-color: rgba(69, 165, 111, 0.16);
+  color: #b9f0cf;
+  border-color: rgba(69, 165, 111, 0.35);
+}
+
+.admin-sidebar__action-btn--publish:hover {
+  background-color: #45a56f;
+  color: white;
+}
+
 .admin-sidebar__action-btn--reset {
   background-color: rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.7);

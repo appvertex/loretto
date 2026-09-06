@@ -60,6 +60,34 @@ CREATE TABLE IF NOT EXISTS gallery_images (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Admin Authentication Settings
+CREATE TABLE IF NOT EXISTS admin_credentials (
+  id TEXT PRIMARY KEY,
+  passcode_hash TEXT NOT NULL,
+  passcode_salt TEXT NOT NULL,
+  hash_algorithm TEXT NOT NULL DEFAULT 'PBKDF2-SHA256',
+  iterations INTEGER NOT NULL DEFAULT 100000,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Initial Admin Passcode Seed
+INSERT OR IGNORE INTO admin_credentials (id, passcode_hash, passcode_salt) VALUES
+('primary', '5b8bc678f3df12733cadb8ffcd8b6de107f3589e610de8ce3962caee2d9e91e7', '66612fc51c16eaa27bfee036eb0e63aa');
+
+-- Shared Website Content Edited From Admin Panel
+CREATE TABLE IF NOT EXISTS site_content (
+  content_key TEXT PRIMARY KEY,
+  content_json TEXT NOT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Admin Login Sessions For Saving Content
+CREATE TABLE IF NOT EXISTS admin_sessions (
+  token_hash TEXT PRIMARY KEY,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expires_at TEXT NOT NULL
+);
+
 -- Initial Seed Data: News
 INSERT OR IGNORE INTO news (id, title, date, category, summary, content, image_url) VALUES 
 ('1', 'Parish Annual Day Celebrations 2026', 'December 10, 2026', 'Feast', 'Join us for the annual feast of Our Lady of Loretto with solemn high mass and cultural programs.', 'The annual parish feast will commence with 9 days of novena starting December 1st. High Mass on Dec 10.', '/lorettochurch/images/news-1.jpg'),

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { leadership as initialLeadership } from '../data/leadership';
 import { historyTimeline as initialTimeline, parishFacts as initialFacts } from '../data/history';
 import { galleryImages as initialGalleryImages, galleryCategories as initialGalleryCategories } from '../data/gallery';
@@ -29,6 +29,21 @@ const STORAGE_KEYS = {
   AUTH: 'loretto_admin_auth',
 };
 
+const CONTENT_KEYS = {
+  LEADERSHIP: 'leadership',
+  HISTORY_TIMELINE: 'historyTimeline',
+  PARISH_FACTS: 'parishFacts',
+  OFFICE: 'office',
+  GALLERY: 'galleryImages',
+  WARDS: 'wards',
+  ORGANIZATIONS: 'organizations',
+  NEWS: 'news',
+  EVENTS: 'events',
+  NEWSLETTERS: 'newsletters',
+  OBITUARIES: 'obituaries',
+  INSTITUTIONS: 'institutions',
+};
+
 const initialOfficeData = {
   address: 'Our Lady of Loretto Church, Loretto, Bantwal, Mangalore, Karnataka — 574211',
   phone: '+91 824 2345678',
@@ -37,6 +52,16 @@ const initialOfficeData = {
   weekendHours: 'Closed after Morning Mass (Sundays & Feast Days)',
   notes: 'The Parish Office handles administrative matters including sacrament certificate requests, Mass intention bookings, baptismal registrations, and general parish assistance.',
 };
+
+const getInitialParishFacts = () => initialFacts.map(fact => {
+  if (fact.label === 'Parish Priest') {
+    return {
+      ...fact,
+      value: `${initialLeadership.parishPriest.designation} ${initialLeadership.parishPriest.name}`,
+    };
+  }
+  return fact;
+});
 
 export const ParishProvider = ({ children }) => {
   // 1. Leadership State
@@ -65,15 +90,7 @@ export const ParishProvider = ({ children }) => {
       const saved = localStorage.getItem(STORAGE_KEYS.PARISH_FACTS);
       if (saved) return JSON.parse(saved);
     } catch {}
-    return initialFacts.map(fact => {
-      if (fact.label === 'Parish Priest') {
-        return {
-          ...fact,
-          value: `${initialLeadership.parishPriest.designation} ${initialLeadership.parishPriest.name}`,
-        };
-      }
-      return fact;
-    });
+    return getInitialParishFacts();
   });
 
   // 4. Office Details State
@@ -171,121 +188,112 @@ export const ParishProvider = ({ children }) => {
   // 13. Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
     try {
-      return sessionStorage.getItem(STORAGE_KEYS.AUTH) === 'true';
+      return sessionStorage.getItem(STORAGE_KEYS.AUTH) === 'true' && api.hasAdminSession();
     } catch {
       return false;
     }
   });
 
-  // Save changes to LocalStorage whenever state changes
-  useEffect(() => {
+  const [hasLoadedRemoteContent, setHasLoadedRemoteContent] = useState(false);
+
+  const saveLocalAndRemote = useCallback((storageKey, contentKey, value) => {
     try {
-      localStorage.setItem(STORAGE_KEYS.LEADERSHIP, JSON.stringify(leadership));
+      localStorage.setItem(storageKey, JSON.stringify(value));
     } catch (e) {
-      console.error('Failed to save leadership to localStorage:', e);
+      console.error(`Failed to save ${contentKey} to localStorage:`, e);
     }
-  }, [leadership]);
+
+    if (hasLoadedRemoteContent && isAdminAuthenticated && api.hasAdminSession()) {
+      api.saveSiteContent(contentKey, value).then((result) => {
+        if (!result.success) {
+          console.warn(`[Loretto API] Failed to save ${contentKey}: ${result.message}`);
+        }
+      });
+    }
+  }, [hasLoadedRemoteContent, isAdminAuthenticated]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.HISTORY_TIMELINE, JSON.stringify(historyTimeline));
-    } catch (e) {
-      console.error('Failed to save history timeline to localStorage:', e);
-    }
-  }, [historyTimeline]);
+    let isMounted = true;
+
+    api.getSiteContent().then(({ content }) => {
+      if (!isMounted || !content) return;
+
+      if (Object.hasOwn(content, CONTENT_KEYS.LEADERSHIP)) setLeadership(content[CONTENT_KEYS.LEADERSHIP]);
+      if (Object.hasOwn(content, CONTENT_KEYS.HISTORY_TIMELINE)) setHistoryTimeline(content[CONTENT_KEYS.HISTORY_TIMELINE]);
+      if (Object.hasOwn(content, CONTENT_KEYS.PARISH_FACTS)) setParishFacts(content[CONTENT_KEYS.PARISH_FACTS]);
+      if (Object.hasOwn(content, CONTENT_KEYS.OFFICE)) setOffice(content[CONTENT_KEYS.OFFICE]);
+      if (Object.hasOwn(content, CONTENT_KEYS.GALLERY)) setGalleryImages(content[CONTENT_KEYS.GALLERY]);
+      if (Object.hasOwn(content, CONTENT_KEYS.WARDS)) setWards(content[CONTENT_KEYS.WARDS]);
+      if (Object.hasOwn(content, CONTENT_KEYS.ORGANIZATIONS)) setOrganizations(content[CONTENT_KEYS.ORGANIZATIONS]);
+      if (Object.hasOwn(content, CONTENT_KEYS.NEWS)) setNews(content[CONTENT_KEYS.NEWS]);
+      if (Object.hasOwn(content, CONTENT_KEYS.EVENTS)) setEvents(content[CONTENT_KEYS.EVENTS]);
+      if (Object.hasOwn(content, CONTENT_KEYS.NEWSLETTERS)) setNewsletters(content[CONTENT_KEYS.NEWSLETTERS]);
+      if (Object.hasOwn(content, CONTENT_KEYS.OBITUARIES)) setObituaries(content[CONTENT_KEYS.OBITUARIES]);
+      if (Object.hasOwn(content, CONTENT_KEYS.INSTITUTIONS)) setInstitutions(content[CONTENT_KEYS.INSTITUTIONS]);
+    }).catch((err) => {
+      console.warn('[Loretto API] Failed to load shared D1 content. Using local content.', err);
+    }).finally(() => {
+      if (isMounted) setHasLoadedRemoteContent(true);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Save changes to LocalStorage and D1 whenever state changes.
+  useEffect(() => {
+    saveLocalAndRemote(STORAGE_KEYS.LEADERSHIP, CONTENT_KEYS.LEADERSHIP, leadership);
+  }, [leadership, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.PARISH_FACTS, JSON.stringify(parishFacts));
-    } catch (e) {
-      console.error('Failed to save parish facts to localStorage:', e);
-    }
-  }, [parishFacts]);
+    saveLocalAndRemote(STORAGE_KEYS.HISTORY_TIMELINE, CONTENT_KEYS.HISTORY_TIMELINE, historyTimeline);
+  }, [historyTimeline, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.OFFICE, JSON.stringify(office));
-    } catch (e) {
-      console.error('Failed to save office data to localStorage:', e);
-    }
-  }, [office]);
+    saveLocalAndRemote(STORAGE_KEYS.PARISH_FACTS, CONTENT_KEYS.PARISH_FACTS, parishFacts);
+  }, [parishFacts, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(galleryImages));
-    } catch (e) {
-      console.error('Failed to save gallery images to localStorage:', e);
-    }
-  }, [galleryImages]);
+    saveLocalAndRemote(STORAGE_KEYS.OFFICE, CONTENT_KEYS.OFFICE, office);
+  }, [office, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.WARDS, JSON.stringify(wards));
-    } catch (e) {
-      console.error('Failed to save wards to localStorage:', e);
-    }
-  }, [wards]);
+    saveLocalAndRemote(STORAGE_KEYS.GALLERY, CONTENT_KEYS.GALLERY, galleryImages);
+  }, [galleryImages, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.ORGANIZATIONS, JSON.stringify(organizations));
-    } catch (e) {
-      console.error('Failed to save organizations to localStorage:', e);
-    }
-  }, [organizations]);
+    saveLocalAndRemote(STORAGE_KEYS.WARDS, CONTENT_KEYS.WARDS, wards);
+  }, [wards, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(news));
-    } catch (e) {
-      console.error('Failed to save news to localStorage:', e);
-    }
-  }, [news]);
+    saveLocalAndRemote(STORAGE_KEYS.ORGANIZATIONS, CONTENT_KEYS.ORGANIZATIONS, organizations);
+  }, [organizations, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
-    } catch (e) {
-      console.error('Failed to save events to localStorage:', e);
-    }
-  }, [events]);
+    saveLocalAndRemote(STORAGE_KEYS.NEWS, CONTENT_KEYS.NEWS, news);
+  }, [news, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.NEWSLETTERS, JSON.stringify(newsletters));
-    } catch (e) {
-      console.error('Failed to save newsletters to localStorage:', e);
-    }
-  }, [newsletters]);
+    saveLocalAndRemote(STORAGE_KEYS.EVENTS, CONTENT_KEYS.EVENTS, events);
+  }, [events, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.OBITUARIES, JSON.stringify(obituaries));
-    } catch (e) {
-      console.error('Failed to save obituaries to localStorage:', e);
-    }
-  }, [obituaries]);
+    saveLocalAndRemote(STORAGE_KEYS.NEWSLETTERS, CONTENT_KEYS.NEWSLETTERS, newsletters);
+  }, [newsletters, saveLocalAndRemote]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.INSTITUTIONS, JSON.stringify(institutions));
-    } catch (e) {
-      console.error('Failed to save institutions to localStorage:', e);
-    }
-  }, [institutions]);
+    saveLocalAndRemote(STORAGE_KEYS.OBITUARIES, CONTENT_KEYS.OBITUARIES, obituaries);
+  }, [obituaries, saveLocalAndRemote]);
+
+  useEffect(() => {
+    saveLocalAndRemote(STORAGE_KEYS.INSTITUTIONS, CONTENT_KEYS.INSTITUTIONS, institutions);
+  }, [institutions, saveLocalAndRemote]);
 
   // Auth helper methods
   const loginAdmin = async (passcode) => {
-    // Check Cloudflare Worker API / Cloudflare Environment Variables / Local Passcode
     const isValid = await api.verifyAdminPasscode(passcode);
-    const storedPasscode = localStorage.getItem('loretto_admin_passcode');
-
-    if (
-      isValid ||
-      passcode === 'loretto2026' ||
-      passcode === 'admin123' ||
-      (storedPasscode && passcode === storedPasscode)
-    ) {
+    if (isValid) {
       setIsAdminAuthenticated(true);
       sessionStorage.setItem(STORAGE_KEYS.AUTH, 'true');
       return true;
@@ -296,10 +304,35 @@ export const ParishProvider = ({ children }) => {
   const logoutAdmin = () => {
     setIsAdminAuthenticated(false);
     sessionStorage.removeItem(STORAGE_KEYS.AUTH);
+    api.clearAdminSession();
   };
 
-  const changeAdminPasscode = (newPasscode) => {
-    localStorage.setItem('loretto_admin_passcode', newPasscode);
+  const changeAdminPasscode = async (currentPasscode, newPasscode) => {
+    return api.changeAdminPasscode(currentPasscode, newPasscode);
+  };
+
+  const publishSiteContent = async () => {
+    const sections = [
+      [CONTENT_KEYS.LEADERSHIP, leadership],
+      [CONTENT_KEYS.HISTORY_TIMELINE, historyTimeline],
+      [CONTENT_KEYS.PARISH_FACTS, parishFacts],
+      [CONTENT_KEYS.OFFICE, office],
+      [CONTENT_KEYS.GALLERY, galleryImages],
+      [CONTENT_KEYS.WARDS, wards],
+      [CONTENT_KEYS.ORGANIZATIONS, organizations],
+      [CONTENT_KEYS.NEWS, news],
+      [CONTENT_KEYS.EVENTS, events],
+      [CONTENT_KEYS.NEWSLETTERS, newsletters],
+      [CONTENT_KEYS.OBITUARIES, obituaries],
+      [CONTENT_KEYS.INSTITUTIONS, institutions],
+    ];
+
+    const results = await Promise.all(
+      sections.map(([contentKey, value]) => api.saveSiteContent(contentKey, value))
+    );
+    const failedResult = results.find(result => !result.success);
+
+    return failedResult || { success: true, message: 'Content published successfully.' };
   };
 
   // Helper 1: Update Parish Priest Name & Details (Globally updates everywhere!)
@@ -908,17 +941,7 @@ export const ParishProvider = ({ children }) => {
   const resetToDefaults = () => {
     setLeadership(initialLeadership);
     setHistoryTimeline(initialTimeline);
-    setParishFacts(
-      initialFacts.map(fact => {
-        if (fact.label === 'Parish Priest') {
-          return {
-            ...fact,
-            value: `${initialLeadership.parishPriest.designation} ${initialLeadership.parishPriest.name}`,
-          };
-        }
-        return fact;
-      })
-    );
+    setParishFacts(getInitialParishFacts());
     setOffice(initialOfficeData);
     setGalleryImages(initialGalleryImages);
     setWards(initialWards);
@@ -966,6 +989,7 @@ export const ParishProvider = ({ children }) => {
         loginAdmin,
         logoutAdmin,
         changeAdminPasscode,
+        publishSiteContent,
         updateParishPriest,
         updatePriestMessages,
         updateHistoryTimeline,

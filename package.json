@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
+    "build": "vite build && node -e \"const fs=require('fs'); fs.copyFileSync('worker/src/index.js','dist/_worker.js'); fs.copyFileSync('dist/index.html','dist/404.html')\"",
     "lint": "oxlint",
     "preview": "vite preview",
-    "worker:dev": "npx wrangler dev worker/src/index.js --config worker/wrangler.toml",
-    "worker:deploy": "npx wrangler deploy worker/src/index.js --config worker/wrangler.toml",
-    "db:migrate:local": "npx wrangler d1 execute loretto-db --local --file=worker/migrations/0001_initial_schema.sql --config worker/wrangler.toml",
-    "db:migrate:remote": "npx wrangler d1 execute loretto-db --remote --file=worker/migrations/0001_initial_schema.sql --config worker/wrangler.toml"
+    "worker:dev": "npm run build && npx wrangler pages dev dist",
+    "worker:deploy": "npm run pages:deploy",
+    "pages:deploy": "npm run build && npx wrangler pages deploy dist --project-name=lorettochurch --commit-dirty=true",
+    "db:migrate:local": "npx wrangler d1 execute loretto-db --local --file=worker/migrations/0001_initial_schema.sql --config wrangler.toml",
+    "db:migrate:remote": "npx wrangler d1 execute loretto-db --remote --file=worker/migrations/0001_initial_schema.sql --config wrangler.toml"
   },
   "dependencies": {
     "framer-motion": "^13.1.0",

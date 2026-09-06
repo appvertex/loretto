@@ -5,17 +5,27 @@ import { news } from '../data/news';
 import { events } from '../data/events';
 import { obituaries } from '../data/obituaries';
 
-const WORKER_API_URL = import.meta.env.VITE_WORKER_API_URL || 'https://loretto-church-api.canara-billing-monorepo.workers.dev';
+const API_BASE_URL = import.meta.env.VITE_WORKER_API_URL || '';
+const ADMIN_TOKEN_STORAGE_KEY = 'loretto_admin_token';
+
+function apiUrl(endpoint) {
+  return `${API_BASE_URL}${endpoint}`;
+}
+
+function getAdminToken() {
+  try {
+    return sessionStorage.getItem(ADMIN_TOKEN_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Helper to fetch from Cloudflare Worker API with timeout and fallback
  */
 async function fetchWithFallback(endpoint, staticFallback) {
-  if (!WORKER_API_URL) {
-    return staticFallback;
-  }
   try {
-    const res = await fetch(`${WORKER_API_URL}${endpoint}`, {
+    const res = await fetch(apiUrl(endpoint), {
       headers: { 'Content-Type': 'application/json' },
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -28,6 +38,49 @@ async function fetchWithFallback(endpoint, staticFallback) {
 }
 
 export const api = {
+  hasAdminSession() {
+    return Boolean(getAdminToken());
+  },
+
+  clearAdminSession() {
+    try {
+      sessionStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY);
+    } catch {}
+  },
+
+  // --- SHARED SITE CONTENT ---
+  async getSiteContent() {
+    const res = await fetchWithFallback('/api/content', { content: {}, count: 0 });
+    return {
+      content: res.content || {},
+      count: res.count || 0,
+    };
+  },
+
+  async saveSiteContent(contentKey, value) {
+    const token = getAdminToken();
+    if (!token) return { success: false, message: 'No admin session available.' };
+
+    try {
+      const res = await fetch(apiUrl(`/api/content/${contentKey}`), {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ value }),
+      });
+      const data = await res.json().catch(() => ({}));
+      return {
+        success: res.ok && Boolean(data.success),
+        message: data.message || (res.ok ? 'Content saved.' : 'Unable to save content.'),
+      };
+    } catch (err) {
+      console.warn(`[Loretto API] Content save error (${contentKey}):`, err);
+      return { success: false, message: 'Could not reach the content API.' };
+    }
+  },
+
   // --- NEWS / ANNOUNCEMENTS ---
   async getNews() {
     const res = await fetchWithFallback('/api/news', { news });
@@ -35,8 +88,7 @@ export const api = {
   },
 
   async createNews(newsItem) {
-    if (!WORKER_API_URL) return { success: false, message: 'Worker API URL not set' };
-    const res = await fetch(`${WORKER_API_URL}/api/news`, {
+    const res = await fetch(apiUrl('/api/news'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newsItem),
@@ -51,8 +103,7 @@ export const api = {
   },
 
   async createEvent(eventItem) {
-    if (!WORKER_API_URL) return { success: false, message: 'Worker API URL not set' };
-    const res = await fetch(`${WORKER_API_URL}/api/events`, {
+    const res = await fetch(apiUrl('/api/events'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(eventItem),
@@ -67,8 +118,7 @@ export const api = {
   },
 
   async createObituary(obituaryItem) {
-    if (!WORKER_API_URL) return { success: false, message: 'Worker API URL not set' };
-    const res = await fetch(`${WORKER_API_URL}/api/obituaries`, {
+    const res = await fetch(apiUrl('/api/obituaries'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(obituaryItem),
@@ -78,11 +128,7 @@ export const api = {
 
   // --- PRAYER INTENTIONS / CONTACT ---
   async submitPrayerIntention(formData) {
-    if (!WORKER_API_URL) {
-      console.log('[Loretto API Simulated Intention Submission]:', formData);
-      return { success: true, message: 'Prayer intention recorded locally' };
-    }
-    const res = await fetch(`${WORKER_API_URL}/api/intentions`, {
+    const res = await fetch(apiUrl('/api/intentions'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
@@ -92,10 +138,9 @@ export const api = {
 
   // --- R2 IMAGE UPLOAD ---
   async uploadImage(file) {
-    if (!WORKER_API_URL) throw new Error('Worker API URL not configured');
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch(`${WORKER_API_URL}/api/images/upload`, {
+    const res = await fetch(apiUrl('/api/images/upload'), {
       method: 'POST',
       body: formData,
     });
@@ -104,35 +149,41 @@ export const api = {
 
   // --- ADMIN AUTHENTICATION ---
   async verifyAdminPasscode(passcode) {
-    // 1. Check Cloudflare Pages Build Environment Variable VITE_ADMIN_PASSCODE first
-    const cloudflareEnvPasscode = import.meta.env.VITE_ADMIN_PASSCODE;
-    if (cloudflareEnvPasscode && passcode === cloudflareEnvPasscode) {
-      return true;
-    }
-
-    // 2. Try Cloudflare Worker API if configured
-    if (WORKER_API_URL) {
-      try {
-        const res = await fetch(`${WORKER_API_URL}/api/admin/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ passcode }),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success) return true;
-        }
-      } catch (err) {
-        console.warn('[Loretto API] Worker auth check error, falling back to env/local:', err);
+    try {
+      const res = await fetch(apiUrl('/api/admin/login'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passcode }),
+      });
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (data.success && data.token) {
+        try {
+          sessionStorage.setItem(ADMIN_TOKEN_STORAGE_KEY, data.token);
+        } catch {}
       }
+      return Boolean(data.success);
+    } catch (err) {
+      console.warn('[Loretto API] Worker auth check error:', err);
+      return false;
     }
+  },
 
-    // 3. Check custom passcode changed by user in local storage
-    const storedPasscode = localStorage.getItem('loretto_admin_passcode');
-    if (storedPasscode && passcode === storedPasscode) {
-      return true;
+  async changeAdminPasscode(currentPasscode, newPasscode) {
+    try {
+      const res = await fetch(apiUrl('/api/admin/passcode'), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPasscode, newPasscode }),
+      });
+      const data = await res.json().catch(() => ({}));
+      return {
+        success: res.ok && Boolean(data.success),
+        message: data.message || (res.ok ? 'Passcode updated successfully.' : 'Unable to update passcode.'),
+      };
+    } catch (err) {
+      console.warn('[Loretto API] Worker passcode update error:', err);
+      return { success: false, message: 'Could not reach the admin API. Please try again.' };
     }
-
-    return false;
   },
 };

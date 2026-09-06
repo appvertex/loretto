@@ -18,10 +18,182 @@ function jsonResponse(data, status = 200) {
   });
 }
 
+const ADMIN_CREDENTIAL_ID = 'primary';
+const PASSCODE_ITERATIONS = 100000;
+const PASSCODE_MIN_LENGTH = 6;
+const ADMIN_SESSION_DURATION_SECONDS = 60 * 60 * 8;
+const CONTENT_KEYS = new Set([
+  'leadership',
+  'historyTimeline',
+  'parishFacts',
+  'office',
+  'galleryImages',
+  'wards',
+  'organizations',
+  'news',
+  'events',
+  'newsletters',
+  'obituaries',
+  'institutions',
+]);
+
+function bytesToHex(buffer) {
+  return [...new Uint8Array(buffer)]
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function generateSalt() {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function hashPasscode(passcode, salt, iterations = PASSCODE_ITERATIONS) {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(passcode),
+    'PBKDF2',
+    false,
+    ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: encoder.encode(salt),
+      iterations,
+      hash: 'SHA-256',
+    },
+    key,
+    256
+  );
+  return bytesToHex(bits);
+}
+
+function timingSafeEqual(a, b) {
+  if (!a || !b || a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i += 1) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
+async function ensureAdminCredentialsTable(db) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS admin_credentials (
+      id TEXT PRIMARY KEY,
+      passcode_hash TEXT NOT NULL,
+      passcode_salt TEXT NOT NULL,
+      hash_algorithm TEXT NOT NULL DEFAULT 'PBKDF2-SHA256',
+      iterations INTEGER NOT NULL DEFAULT 100000,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `).run();
+}
+
+async function getAdminCredentials(db) {
+  await ensureAdminCredentialsTable(db);
+  return db.prepare('SELECT * FROM admin_credentials WHERE id = ?')
+    .bind(ADMIN_CREDENTIAL_ID)
+    .first();
+}
+
+async function verifyAdminPasscode(db, passcode) {
+  const credentials = await getAdminCredentials(db);
+  if (!credentials) {
+    return false;
+  }
+
+  const attemptedHash = await hashPasscode(
+    passcode,
+    credentials.passcode_salt,
+    credentials.iterations || PASSCODE_ITERATIONS
+  );
+  return timingSafeEqual(attemptedHash, credentials.passcode_hash);
+}
+
+async function updateAdminPasscode(db, newPasscode) {
+  const salt = generateSalt();
+  const passcodeHash = await hashPasscode(newPasscode, salt);
+
+  await db.prepare(`
+    INSERT INTO admin_credentials (id, passcode_hash, passcode_salt, iterations, updated_at)
+    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+    ON CONFLICT(id) DO UPDATE SET
+      passcode_hash = excluded.passcode_hash,
+      passcode_salt = excluded.passcode_salt,
+      iterations = excluded.iterations,
+      updated_at = CURRENT_TIMESTAMP
+  `).bind(ADMIN_CREDENTIAL_ID, passcodeHash, salt, PASSCODE_ITERATIONS).run();
+}
+
+async function sha256Hex(value) {
+  const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return bytesToHex(buffer);
+}
+
+function generateAdminToken() {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function ensureAdminSessionsTable(db) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS admin_sessions (
+      token_hash TEXT PRIMARY KEY,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      expires_at TEXT NOT NULL
+    )
+  `).run();
+}
+
+async function createAdminSession(db) {
+  await ensureAdminSessionsTable(db);
+  const token = generateAdminToken();
+  const tokenHash = await sha256Hex(token);
+  const expiresAt = new Date(Date.now() + ADMIN_SESSION_DURATION_SECONDS * 1000).toISOString();
+
+  await db.prepare('DELETE FROM admin_sessions WHERE expires_at <= ?')
+    .bind(new Date().toISOString())
+    .run();
+  await db.prepare('INSERT INTO admin_sessions (token_hash, expires_at) VALUES (?, ?)')
+    .bind(tokenHash, expiresAt)
+    .run();
+
+  return { token, expiresAt };
+}
+
+async function verifyAdminSession(db, request) {
+  await ensureAdminSessionsTable(db);
+  const authHeader = request.headers.get('Authorization') || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+  if (!token) return false;
+
+  const tokenHash = await sha256Hex(token);
+  const session = await db.prepare('SELECT token_hash FROM admin_sessions WHERE token_hash = ? AND expires_at > ?')
+    .bind(tokenHash, new Date().toISOString())
+    .first();
+  return Boolean(session);
+}
+
+async function ensureSiteContentTable(db) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS site_content (
+      content_key TEXT PRIMARY KEY,
+      content_json TEXT NOT NULL,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `).run();
+}
+
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env, _ctx) {
     const url = new URL(request.url);
     const pathname = url.pathname;
+    const isApiRequest = pathname.startsWith('/api/') || pathname.startsWith('/images/');
 
     // Handle CORS Preflight
     if (request.method === 'OPTIONS') {
@@ -29,23 +201,99 @@ export default {
     }
 
     try {
+      if (!isApiRequest && env.ASSETS) {
+        return env.ASSETS.fetch(request);
+      }
+
+      if (!env.DB) {
+        return jsonResponse({ error: 'D1 Database binding (DB) not configured' }, 500);
+      }
+
       // ----------------------------------------------------
       // ADMIN AUTHENTICATION ROUTE: POST /api/admin/login
       // ----------------------------------------------------
       if (pathname === '/api/admin/login' && request.method === 'POST') {
         const body = await request.json();
-        const configuredSecret = env.ADMIN_PASSCODE || env.VITE_ADMIN_PASSCODE;
-        if (!configuredSecret) {
+        if (body?.passcode && await verifyAdminPasscode(env.DB, body.passcode)) {
+          const session = await createAdminSession(env.DB);
           return jsonResponse({
-            success: false,
-            message: 'ADMIN_PASSCODE environment variable is not configured in Cloudflare yet.'
-          }, 400);
-        }
-        if (body && body.passcode === configuredSecret) {
-          return jsonResponse({ success: true, message: 'Authenticated successfully' });
+            success: true,
+            message: 'Authenticated successfully',
+            token: session.token,
+            expiresAt: session.expiresAt,
+          });
         } else {
           return jsonResponse({ success: false, message: 'Incorrect passcode' }, 401);
         }
+      }
+
+      // ----------------------------------------------------
+      // ADMIN PASSCODE UPDATE ROUTE: PUT /api/admin/passcode
+      // ----------------------------------------------------
+      if (pathname === '/api/admin/passcode' && request.method === 'PUT') {
+        const body = await request.json();
+
+        if (!body?.currentPasscode || !body?.newPasscode) {
+          return jsonResponse({ success: false, message: 'Current and new passcodes are required.' }, 400);
+        }
+
+        if (String(body.newPasscode).length < PASSCODE_MIN_LENGTH) {
+          return jsonResponse({ success: false, message: `New passcode must be at least ${PASSCODE_MIN_LENGTH} characters.` }, 400);
+        }
+
+        const isCurrentPasscodeValid = await verifyAdminPasscode(env.DB, body.currentPasscode);
+        if (!isCurrentPasscodeValid) {
+          return jsonResponse({ success: false, message: 'Current passcode is incorrect.' }, 401);
+        }
+
+        await updateAdminPasscode(env.DB, body.newPasscode);
+        return jsonResponse({ success: true, message: 'Passcode updated successfully.' });
+      }
+
+      // ----------------------------------------------------
+      // SHARED SITE CONTENT ROUTES
+      // ----------------------------------------------------
+      if (pathname === '/api/content' && request.method === 'GET') {
+        await ensureSiteContentTable(env.DB);
+        const { results } = await env.DB.prepare('SELECT content_key, content_json, updated_at FROM site_content').all();
+        const content = {};
+
+        for (const row of results || []) {
+          try {
+            content[row.content_key] = JSON.parse(row.content_json);
+          } catch {
+            content[row.content_key] = null;
+          }
+        }
+
+        return jsonResponse({ content, count: results?.length || 0 });
+      }
+
+      if (pathname.startsWith('/api/content/') && request.method === 'PUT') {
+        const contentKey = pathname.replace('/api/content/', '');
+        if (!CONTENT_KEYS.has(contentKey)) {
+          return jsonResponse({ success: false, message: 'Unknown content section.' }, 400);
+        }
+
+        if (!await verifyAdminSession(env.DB, request)) {
+          return jsonResponse({ success: false, message: 'Admin session expired. Please log in again.' }, 401);
+        }
+
+        const body = await request.json();
+        if (!body || !Object.hasOwn(body, 'value')) {
+          return jsonResponse({ success: false, message: 'Content value is required.' }, 400);
+        }
+
+        await ensureSiteContentTable(env.DB);
+        await env.DB.prepare(`
+          INSERT INTO site_content (content_key, content_json, updated_at)
+          VALUES (?, ?, CURRENT_TIMESTAMP)
+          ON CONFLICT(content_key) DO UPDATE SET
+            content_json = excluded.content_json,
+            updated_at = CURRENT_TIMESTAMP
+        `).bind(contentKey, JSON.stringify(body.value)).run();
+
+        return jsonResponse({ success: true, key: contentKey });
       }
 
       // ----------------------------------------------------
@@ -91,10 +339,6 @@ export default {
       // ----------------------------------------------------
       // D1 DATABASE ROUTES
       // ----------------------------------------------------
-      if (!env.DB) {
-        return jsonResponse({ error: 'D1 Database binding (DB) not configured' }, 500);
-      }
-
       // GET /api/news
       if (pathname === '/api/news' && request.method === 'GET') {
         const { results } = await env.DB.prepare('SELECT * FROM news ORDER BY created_at DESC').all();
@@ -151,6 +395,10 @@ export default {
           'INSERT INTO prayer_intentions (id, full_name, phone, email, intention_type, message) VALUES (?, ?, ?, ?, ?, ?)'
         ).bind(id, body.full_name, body.phone || '', body.email || '', body.intention_type || 'general', body.message).run();
         return jsonResponse({ success: true, message: 'Prayer intention submitted successfully', id }, 201);
+      }
+
+      if (env.ASSETS) {
+        return env.ASSETS.fetch(request);
       }
 
       // Default 404 Route
