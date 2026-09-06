@@ -104,7 +104,13 @@ export const api = {
 
   // --- ADMIN AUTHENTICATION ---
   async verifyAdminPasscode(passcode) {
-    // 1. Try Cloudflare Worker API if configured
+    // 1. Check Cloudflare Pages Build Environment Variable VITE_ADMIN_PASSCODE first
+    const cloudflareEnvPasscode = import.meta.env.VITE_ADMIN_PASSCODE;
+    if (cloudflareEnvPasscode && passcode === cloudflareEnvPasscode) {
+      return true;
+    }
+
+    // 2. Try Cloudflare Worker API if configured
     if (WORKER_API_URL) {
       try {
         const res = await fetch(`${WORKER_API_URL}/api/admin/login`, {
@@ -121,16 +127,10 @@ export const api = {
       }
     }
 
-    // 2. Check Cloudflare Pages Build Environment Variable VITE_ADMIN_PASSCODE
-    const cloudflareEnvPasscode = import.meta.env.VITE_ADMIN_PASSCODE;
-    if (cloudflareEnvPasscode) {
-      return passcode === cloudflareEnvPasscode;
-    }
-
     // 3. Check custom passcode changed by user in local storage
     const storedPasscode = localStorage.getItem('loretto_admin_passcode');
-    if (storedPasscode) {
-      return passcode === storedPasscode;
+    if (storedPasscode && passcode === storedPasscode) {
+      return true;
     }
 
     return false;
