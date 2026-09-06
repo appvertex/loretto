@@ -1,0 +1,14 @@
+name = "loretto-church-api"
+main = "src/index.js"
+compatibility_date = "2024-09-01"
+
+# Cloudflare D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "loretto-db"
+database_id = "local-loretto-db-id"
+
+# Cloudflare R2 Object Storage Bucket Binding
+[[r2_buckets]]
+binding = "IMAGES_BUCKET"
+bucket_name = "loretto-images"
