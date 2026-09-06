@@ -6,7 +6,7 @@ import { Calendar, ArrowRight, Bell, ChevronRight, FileText, Sparkles } from 'lu
 import HeroSlider from '../components/home/HeroSlider';
 import WelcomeSection from '../components/home/WelcomeSection';
 import PatronessAndPriestSection from '../components/home/PatronessAndPriestSection';
-import SpecialCelebrationsSection from '../components/home/SpecialCelebrationsSection';
+
 import GallerySection from '../components/home/GallerySection';
 import MassTimesStrip from '../components/home/MassTimesStrip';
 import LocationSection from '../components/home/LocationSection';
@@ -192,8 +192,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* 6. Special Celebrations (Feast banner) */}
-      <SpecialCelebrationsSection />
+
 
       {/* 7. Photo Gallery Highlight (6 photos) */}
       <GallerySection />
