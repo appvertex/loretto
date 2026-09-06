@@ -9,7 +9,7 @@ const AdminLogin = () => {
   const [passcode, setPasscode] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -18,7 +18,7 @@ const AdminLogin = () => {
       return;
     }
 
-    const success = loginAdmin(passcode);
+    const success = await loginAdmin(passcode);
     if (!success) {
       setError('Incorrect passcode. Please check your admin passcode.');
     }

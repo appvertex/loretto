@@ -1,9 +1,9 @@
 // Unified API Client for Loretto Church Web App
 // Seamlessly connects to Cloudflare Worker backend (D1 & R2) with fallback to local static data
 
-import { newsData } from '../data/news';
-import { eventsData } from '../data/events';
-import { obituariesData } from '../data/obituaries';
+import { news } from '../data/news';
+import { events } from '../data/events';
+import { obituaries } from '../data/obituaries';
 
 const WORKER_API_URL = import.meta.env.VITE_WORKER_API_URL || '';
 
@@ -30,7 +30,7 @@ async function fetchWithFallback(endpoint, staticFallback) {
 export const api = {
   // --- NEWS / ANNOUNCEMENTS ---
   async getNews() {
-    const res = await fetchWithFallback('/api/news', { news: newsData });
+    const res = await fetchWithFallback('/api/news', { news });
     return res.news || res;
   },
 
@@ -46,7 +46,7 @@ export const api = {
 
   // --- EVENTS ---
   async getEvents() {
-    const res = await fetchWithFallback('/api/events', { events: eventsData });
+    const res = await fetchWithFallback('/api/events', { events });
     return res.events || res;
   },
 
@@ -62,7 +62,7 @@ export const api = {
 
   // --- OBITUARIES ---
   async getObituaries() {
-    const res = await fetchWithFallback('/api/obituaries', { obituaries: obituariesData });
+    const res = await fetchWithFallback('/api/obituaries', { obituaries });
     return res.obituaries || res;
   },
 
@@ -100,5 +100,39 @@ export const api = {
       body: formData,
     });
     return res.json();
+  },
+
+  // --- ADMIN AUTHENTICATION ---
+  async verifyAdminPasscode(passcode) {
+    // 1. Try Cloudflare Worker API if configured
+    if (WORKER_API_URL) {
+      try {
+        const res = await fetch(`${WORKER_API_URL}/api/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passcode }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) return true;
+        }
+      } catch (err) {
+        console.warn('[Loretto API] Worker auth check error, falling back to env/local:', err);
+      }
+    }
+
+    // 2. Check Cloudflare Pages Build Environment Variable VITE_ADMIN_PASSCODE
+    const cloudflareEnvPasscode = import.meta.env.VITE_ADMIN_PASSCODE;
+    if (cloudflareEnvPasscode) {
+      return passcode === cloudflareEnvPasscode;
+    }
+
+    // 3. Check custom passcode changed by user in local storage
+    const storedPasscode = localStorage.getItem('loretto_admin_passcode');
+    if (storedPasscode) {
+      return passcode === storedPasscode;
+    }
+
+    return false;
   },
 };

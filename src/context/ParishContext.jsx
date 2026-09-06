@@ -9,6 +9,7 @@ import { events as initialEvents } from '../data/events';
 import { newsletters as initialNewsletters } from '../data/newsletter';
 import { obituaries as initialObituaries } from '../data/obituaries';
 import { initialInstitutions } from '../data/institutions';
+import { api } from '../api/client';
 
 const ParishContext = createContext(null);
 
@@ -274,11 +275,13 @@ export const ParishProvider = ({ children }) => {
   }, [institutions]);
 
   // Auth helper methods
-  const loginAdmin = (passcode) => {
-    const defaultPasscode = import.meta.env.VITE_ADMIN_PASSCODE || 'loretto2026';
+  const loginAdmin = async (passcode) => {
+    // Check Cloudflare Worker API / Cloudflare Environment Variables / Local Passcode
+    const isValid = await api.verifyAdminPasscode(passcode);
     const storedPasscode = localStorage.getItem('loretto_admin_passcode');
+
     if (
-      passcode === defaultPasscode ||
+      isValid ||
       passcode === 'loretto2026' ||
       passcode === 'admin123' ||
       (storedPasscode && passcode === storedPasscode)

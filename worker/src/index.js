@@ -30,6 +30,25 @@ export default {
 
     try {
       // ----------------------------------------------------
+      // ADMIN AUTHENTICATION ROUTE: POST /api/admin/login
+      // ----------------------------------------------------
+      if (pathname === '/api/admin/login' && request.method === 'POST') {
+        const body = await request.json();
+        const configuredSecret = env.ADMIN_PASSCODE || env.VITE_ADMIN_PASSCODE;
+        if (!configuredSecret) {
+          return jsonResponse({
+            success: false,
+            message: 'ADMIN_PASSCODE environment variable is not configured in Cloudflare yet.'
+          }, 400);
+        }
+        if (body && body.passcode === configuredSecret) {
+          return jsonResponse({ success: true, message: 'Authenticated successfully' });
+        } else {
+          return jsonResponse({ success: false, message: 'Incorrect passcode' }, 401);
+        }
+      }
+
+      // ----------------------------------------------------
       // R2 IMAGE SERVING ROUTE: GET /images/:key
       // ----------------------------------------------------
       if (pathname.startsWith('/images/') && request.method === 'GET') {
