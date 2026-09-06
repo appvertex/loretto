@@ -393,7 +393,7 @@ p {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/lorettochurch/images/hero-exterior.jpg') center/cover no-repeat;
+  background: url('/images/hero-exterior.jpg') center/cover no-repeat;
   opacity: 0.42;
 }
 
