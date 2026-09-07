@@ -196,10 +196,11 @@ const AdminDashboard = () => {
     });
   };
 
-  const toggleSidebarDropdown = (setDropdownOpen, isDropdownOpen) => {
+  const toggleSidebarDropdown = (event, setDropdownOpen) => {
     // Keep the drawer open when a mobile user taps a parent menu item.
+    event.stopPropagation();
     setIsMobileSidebarOpen(true);
-    setDropdownOpen(!isDropdownOpen);
+    setDropdownOpen((isOpen) => !isOpen);
   };
 
   return (
@@ -242,7 +243,7 @@ const AdminDashboard = () => {
                       type="button"
                       className={`admin-sidebar__item-btn ${isParishActive ? 'active' : ''}`}
                       aria-expanded={isParishDropdownOpen}
-                      onClick={() => toggleSidebarDropdown(setIsParishDropdownOpen, isParishDropdownOpen)}
+                      onClick={(event) => toggleSidebarDropdown(event, setIsParishDropdownOpen)}
                     >
                       {item.icon}
                       <span style={{ flex: 1 }}>{item.label}</span>
@@ -278,7 +279,7 @@ const AdminDashboard = () => {
                       type="button"
                       className={`admin-sidebar__item-btn ${isMediaActive ? 'active' : ''}`}
                       aria-expanded={isMediaDropdownOpen}
-                      onClick={() => toggleSidebarDropdown(setIsMediaDropdownOpen, isMediaDropdownOpen)}
+                      onClick={(event) => toggleSidebarDropdown(event, setIsMediaDropdownOpen)}
                     >
                       {item.icon}
                       <span style={{ flex: 1 }}>{item.label}</span>
@@ -314,11 +315,11 @@ const AdminDashboard = () => {
                       type="button"
                       className={`admin-sidebar__item-btn ${isOrgActive ? 'active' : ''}`}
                       aria-expanded={isOrgsDropdownOpen}
-                      onClick={() => {
+                      onClick={(event) => {
                         if (activeTab !== 'organizations') {
                           setActiveTab('organizations');
                         }
-                        toggleSidebarDropdown(setIsOrgsDropdownOpen, isOrgsDropdownOpen);
+                        toggleSidebarDropdown(event, setIsOrgsDropdownOpen);
                       }}
                     >
                       {item.icon}
