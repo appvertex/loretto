@@ -8,17 +8,9 @@ binding = "DB"
 database_name = "loretto-db"
 database_id = "2884c023-d867-4dd6-9288-40ac65fc6557"
 
-[[r2_buckets]]
-binding = "IMAGES_BUCKET"
-bucket_name = "loretto-images"
-
 [env.production]
 
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "loretto-db"
 database_id = "2884c023-d867-4dd6-9288-40ac65fc6557"
-
-[[env.production.r2_buckets]]
-binding = "IMAGES_BUCKET"
-bucket_name = "loretto-images"

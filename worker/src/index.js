@@ -194,7 +194,6 @@ export default {
     const url = new URL(request.url);
     const pathname = url.pathname;
     const isApiRequest = pathname.startsWith('/api/');
-    const isImageRequest = pathname.startsWith('/images/');
 
     // Handle CORS Preflight
     if (request.method === 'OPTIONS') {
@@ -202,7 +201,7 @@ export default {
     }
 
     try {
-      if (!isApiRequest && !isImageRequest && env.ASSETS) {
+      if (!isApiRequest && env.ASSETS) {
         return env.ASSETS.fetch(request);
       }
 
@@ -298,51 +297,59 @@ export default {
       }
 
       // ----------------------------------------------------
-      // R2 IMAGE SERVING ROUTE: GET /images/:key
-      // ----------------------------------------------------
-      if (pathname.startsWith('/images/') && request.method === 'GET') {
-        if (!env.IMAGES_BUCKET && env.ASSETS) {
-          return env.ASSETS.fetch(request);
-        }
-
-        const key = pathname.replace('/images/', '');
-        if (!env.IMAGES_BUCKET) {
-          return jsonResponse({ error: 'R2 Bucket not configured' }, 500);
-        }
-        const object = await env.IMAGES_BUCKET.get(key);
-        if (!object) {
-          if (env.ASSETS) {
-            return env.ASSETS.fetch(request);
-          }
-
-          return new Response('Image not found', { status: 404 });
-        }
-        const headers = new Headers();
-        object.writeHttpMetadata(headers);
-        headers.set('etag', object.httpEtag);
-        headers.set('Access-Control-Allow-Origin', '*');
-        return new Response(object.body, { headers });
-      }
-
-      // ----------------------------------------------------
-      // R2 IMAGE UPLOAD ROUTE: POST /api/images/upload
+      // CLOUDINARY IMAGE UPLOAD ROUTE: POST /api/images/upload
       // ----------------------------------------------------
       if (pathname === '/api/images/upload' && request.method === 'POST') {
-        if (!env.IMAGES_BUCKET) {
-          return jsonResponse({ error: 'R2 Bucket not configured' }, 500);
+        if (!await verifyAdminSession(env.DB, request)) {
+          return jsonResponse({ error: 'Unauthorized' }, 401);
         }
+
+        const cloudName = env.CLOUDINARY_CLOUD_NAME;
+        const apiKey = env.CLOUDINARY_API_KEY;
+        const apiSecret = env.CLOUDINARY_API_SECRET;
+        if (!cloudName || !apiKey || !apiSecret) {
+          return jsonResponse({ error: 'Cloudinary is not configured' }, 500);
+        }
+
         const formData = await request.formData();
         const file = formData.get('file');
         if (!file) {
           return jsonResponse({ error: 'No file provided' }, 400);
         }
-        const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '')}`;
-        await env.IMAGES_BUCKET.put(filename, file.stream(), {
-          httpMetadata: { contentType: file.type || 'image/jpeg' },
-        });
 
-        const imagePublicUrl = `${url.origin}/images/${filename}`;
-        return jsonResponse({ success: true, key: filename, url: imagePublicUrl });
+        const timestamp = Math.floor(Date.now() / 1000);
+        const uploadParams = { folder: 'loretto', timestamp: String(timestamp) };
+        const signatureText = Object.entries(uploadParams)
+          .sort(([left], [right]) => left.localeCompare(right))
+          .map(([key, value]) => `${key}=${value}`)
+          .join('&');
+        const signatureBuffer = await crypto.subtle.digest(
+          'SHA-1',
+          new TextEncoder().encode(`${signatureText}${apiSecret}`)
+        );
+        const signature = bytesToHex(signatureBuffer);
+
+        const cloudinaryForm = new FormData();
+        cloudinaryForm.append('file', file);
+        cloudinaryForm.append('api_key', apiKey);
+        cloudinaryForm.append('timestamp', String(timestamp));
+        cloudinaryForm.append('folder', 'loretto');
+        cloudinaryForm.append('signature', signature);
+
+        const cloudinaryResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${encodeURIComponent(cloudName)}/image/upload`,
+          { method: 'POST', body: cloudinaryForm }
+        );
+        const cloudinaryData = await cloudinaryResponse.json();
+        if (!cloudinaryResponse.ok) {
+          return jsonResponse({ error: cloudinaryData.error?.message || 'Cloudinary upload failed' }, 502);
+        }
+
+        return jsonResponse({
+          success: true,
+          key: cloudinaryData.public_id,
+          url: cloudinaryData.secure_url,
+        });
       }
 
       // ----------------------------------------------------

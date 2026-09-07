@@ -1,5 +1,5 @@
 // Unified API Client for Loretto Church Web App
-// Seamlessly connects to Cloudflare Worker backend (D1 & R2) with fallback to local static data
+// Seamlessly connects to Cloudflare Worker backend (D1 & Cloudinary) with fallback to local static data
 
 import { news } from '../data/news';
 import { events } from '../data/events';
@@ -136,12 +136,15 @@ export const api = {
     return res.json();
   },
 
-  // --- R2 IMAGE UPLOAD ---
+  // --- CLOUDINARY IMAGE UPLOAD ---
   async uploadImage(file) {
     const formData = new FormData();
     formData.append('file', file);
     const res = await fetch(apiUrl('/api/images/upload'), {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${getAdminToken() || ''}`,
+      },
       body: formData,
     });
     return res.json();
