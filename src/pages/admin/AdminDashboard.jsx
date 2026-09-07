@@ -181,13 +181,28 @@ const AdminDashboard = () => {
     alert(result.message || 'Could not publish content. Please log in again and retry.');
   };
 
+  const handleMobileSidebarToggle = () => {
+    setIsMobileSidebarOpen((isOpen) => {
+      const willOpen = !isOpen;
+
+      // Start with sections closed on mobile so the first tap expands them.
+      if (willOpen) {
+        setIsParishDropdownOpen(false);
+        setIsMediaDropdownOpen(false);
+        setIsOrgsDropdownOpen(false);
+      }
+
+      return willOpen;
+    });
+  };
+
   return (
     <div className="admin-layout">
       {/* ── MOBILE TOP BAR ── */}
       <div className="admin-mobile-bar">
         <button
           className="admin-mobile-toggle"
-          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          onClick={handleMobileSidebarToggle}
         >
           {isMobileSidebarOpen ? <X size={20} /> : <Menu size={20} />}
           <span>Admin Menu</span>
