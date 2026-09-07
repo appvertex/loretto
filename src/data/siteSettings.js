@@ -1,0 +1,52 @@
+const asset = (name) => `${import.meta.env.BASE_URL}images/${name}`;
+
+export const initialSiteSettings = {
+  churchName: 'Our Lady of Loretto Church',
+  location: 'Loretto, Bantwal',
+  heroSlides: [
+    {
+      id: 1,
+      image: asset('hero-exterior.jpg'),
+      eyebrow: 'WELCOME TO LORETTO CHURCH',
+      title: 'A Community of Faith, Hope & Love',
+      subtitle: 'Rooted in Catholic tradition, living out the Gospel in communion and service.',
+      primaryCtaText: 'Discover Our Parish',
+      primaryCtaTo: '/about/our-parish',
+      secondaryCtaText: 'Mass Schedule',
+      secondaryCtaTo: '/faith/mass-timings',
+    },
+    {
+      id: 2,
+      image: asset('hero-interior.jpg'),
+      eyebrow: 'A SACRED SANCTUARY',
+      title: 'Encounter Grace & Fellowship',
+      subtitle: 'Gather with us for the Holy Sacrifice of the Mass and spiritual renewal.',
+      primaryCtaText: 'View Mass Schedule',
+      primaryCtaTo: '/faith/mass-timings',
+      secondaryCtaText: 'Our Sacraments',
+      secondaryCtaTo: '/faith/sacraments',
+    },
+    {
+      id: 3,
+      image: asset('hero-marian.jpg'),
+      eyebrow: 'OUR PATRONESS',
+      title: 'Under Mother Mary’s Protection',
+      subtitle: 'Seeking the maternal intercession of Our Lady of Loretto for our families.',
+      primaryCtaText: 'Our Patroness',
+      primaryCtaTo: '/about/our-patroness',
+      secondaryCtaText: 'Parish History',
+      secondaryCtaTo: '/about/history',
+    },
+    {
+      id: 4,
+      image: asset('hero-community.jpg'),
+      eyebrow: 'PARISH FELLOWSHIP',
+      title: 'Serving Christ in One Another',
+      subtitle: 'Vibrant ministries, active youth, and community celebrations for all ages.',
+      primaryCtaText: 'Upcoming Events',
+      primaryCtaTo: '/events',
+      secondaryCtaText: 'Our Ministries',
+      secondaryCtaTo: '/organizations',
+    },
+  ],
+};

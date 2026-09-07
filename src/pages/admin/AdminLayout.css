@@ -484,6 +484,130 @@
   background-color: #bd2130;
 }
 
+.admin-settings-divider {
+  height: 1px;
+  background: var(--border-gold);
+  margin: 1.75rem 0;
+}
+
+.admin-settings-slides {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.admin-settings-slide {
+  min-width: 0;
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.admin-settings-slide legend {
+  padding: 0 0.45rem;
+  color: var(--brown-primary);
+  font-weight: 700;
+}
+
+.admin-settings-slide__image-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-settings-slide__preview {
+  width: 112px;
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-sm);
+  background: var(--cream-soft);
+  color: var(--brown-muted);
+}
+
+.admin-settings-slide__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-settings-slide__image-actions {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.admin-settings-upload {
+  width: fit-content;
+  position: relative;
+}
+
+.admin-settings-upload input[type='file'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.admin-icon-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.admin-icon-btn--danger {
+  color: #b02a37;
+  background: rgba(220, 53, 69, 0.1);
+  border-color: rgba(220, 53, 69, 0.25);
+}
+
+.admin-icon-btn--danger:hover {
+  color: white;
+  background: #b02a37;
+}
+
+.admin-settings-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.admin-spin {
+  animation: admin-spin 0.9s linear infinite;
+}
+
+@keyframes admin-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .admin-settings-slide__image-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .admin-settings-slide__preview {
+    width: 100%;
+    grid-column: 1 / -1;
+  }
+
+  .admin-settings-slide__image-actions {
+    grid-column: 1 / -1;
+  }
+}
+
 .admin-card {
   background-color: var(--warm-white);
   border-radius: var(--radius-md);

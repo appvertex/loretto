@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useParishData } from '../../context/ParishContext';
 import './Footer.css';
 
 const FacebookIcon = () => (
@@ -37,6 +38,8 @@ const CathedralSilhouette = () => (
 );
 
 const Footer = () => {
+  const { siteSettings } = useParishData();
+  const churchName = siteSettings.churchName || 'Our Lady of Loretto Church';
   const currentYear = new Date().getFullYear();
   const logoUrl = `${import.meta.env.BASE_URL}favicon.png`;
 
@@ -59,12 +62,12 @@ const Footer = () => {
           <div className="footer__brand">
             <div className="footer__medallion">
               <CrossMotif />
-              <img src={logoUrl} alt="Our Lady of Loretto Church Logo" className="footer__logo" />
+              <img src={logoUrl} alt={`${churchName} Logo`} className="footer__logo" />
             </div>
 
             <div className="footer__title-wrapper">
               <span className="footer__title-line footer__title-line--left" aria-hidden="true" />
-              <h2 className="footer__title">Our Lady of Loretto Church</h2>
+              <h2 className="footer__title">{churchName}</h2>
               <span className="footer__title-line footer__title-line--right" aria-hidden="true" />
             </div>
             
@@ -104,7 +107,7 @@ const Footer = () => {
         <div className="container">
           <div className="footer__bottom">
             <p className="footer__copyright">
-              © {currentYear} Our Lady of Loretto Church, Loretto, Mangalore. All rights reserved.
+              © {currentYear} {churchName}, Loretto, Mangalore. All rights reserved.
             </p>
             <p className="footer__credit">
               Powered by{' '}

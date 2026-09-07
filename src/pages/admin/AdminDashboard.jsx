@@ -15,6 +15,7 @@ import AdminEventsSection from './AdminEventsSection';
 import AdminNewsletterSection from './AdminNewsletterSection';
 import AdminObituarySection from './AdminObituarySection';
 import AdminInstitutionsSection from './AdminInstitutionsSection';
+import AdminSiteSettingsSection from './AdminSiteSettingsSection';
 import {
   UserCheck,
   MessageSquareText,
@@ -38,7 +39,8 @@ import {
   ShieldCheck,
   Church,
   Radio,
-  Flame
+  Flame,
+  Settings
 } from 'lucide-react';
 import './AdminLayout.css';
 
@@ -58,6 +60,7 @@ const mediaSubItems = [
 ];
 
 const navItems = [
+  { id: 'siteSettings', label: 'Site Settings', icon: <Settings size={18} /> },
   {
     id: 'parish',
     label: 'Parish Details (ಫಿರ್ಗಜ್)',
@@ -87,7 +90,7 @@ const navItems = [
 ];
 
 const AdminDashboard = () => {
-  const { isAdminAuthenticated, logoutAdmin, resetToDefaults, changeAdminPasscode, publishSiteContent, organizations } = useParishData();
+  const { isAdminAuthenticated, logoutAdmin, resetToDefaults, changeAdminPasscode, publishSiteContent, organizations, siteSettings } = useParishData();
   const [activeTab, setActiveTab] = useState('priest');
   const [selectedOrgSlug, setSelectedOrgSlug] = useState(null);
   const [isParishDropdownOpen, setIsParishDropdownOpen] = useState(true);
@@ -225,7 +228,7 @@ const AdminDashboard = () => {
         <div className="admin-sidebar__brand">
           <img src={logoUrl} alt="Loretto Church" className="admin-sidebar__logo" />
           <div>
-            <h2 className="admin-sidebar__title">Loretto Church</h2>
+            <h2 className="admin-sidebar__title">{siteSettings.churchName || 'Loretto Church'}</h2>
             <span className="admin-sidebar__subtitle">Admin Dashboard</span>
           </div>
         </div>
@@ -459,6 +462,7 @@ const AdminDashboard = () => {
           {activeTab === 'gallery' && <AdminGallerySection />}
           {activeTab === 'obituary' && <AdminObituarySection />}
           {activeTab === 'institutions' && <AdminInstitutionsSection />}
+          {activeTab === 'siteSettings' && <AdminSiteSettingsSection />}
         </div>
       </main>
 

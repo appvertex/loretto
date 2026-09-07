@@ -5,7 +5,8 @@ import { useParishData } from '../../context/ParishContext';
 import './LocationSection.css';
 
 const LocationSection = () => {
-  const { office } = useParishData();
+  const { office, siteSettings } = useParishData();
+  const churchName = siteSettings.churchName || 'Our Lady of Loretto Church';
 
   return (
     <section className="location-section section section--white" aria-label="Our Location">
@@ -13,7 +14,7 @@ const LocationSection = () => {
         <div className="section-heading">
           <h2 className="section-heading__title">Our Location</h2>
           <p className="section-heading__subtitle">
-            Visit Our Lady of Loretto Church in Loretto, Mangalore
+            Visit {churchName} in Loretto, Mangalore
           </p>
         </div>
 
@@ -48,7 +49,7 @@ const LocationSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <div className="location-info-card">
-              <h3 className="location-info-card__title">Our Lady of Loretto Church</h3>
+              <h3 className="location-info-card__title">{churchName}</h3>
               <p className="location-info-card__subtitle">Diocese of Mangalore</p>
               
               <ul className="location-info-card__list">

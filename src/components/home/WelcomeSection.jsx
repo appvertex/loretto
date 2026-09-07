@@ -2,9 +2,13 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Shield } from 'lucide-react';
+import { useParishData } from '../../context/ParishContext';
 import './WelcomeSection.css';
 
 const WelcomeSection = () => {
+  const { siteSettings } = useParishData();
+  const churchName = siteSettings.churchName || 'Our Lady of Loretto Church';
+
   return (
     <section className="welcome section section--white" aria-label="About Our Church">
       <div className="container">
@@ -25,7 +29,7 @@ const WelcomeSection = () => {
             </h3>
             
             <p className="welcome__text">
-              Our Lady of Loretto Church is a vibrant Catholic parish under the Roman Catholic Diocese of Mangalore. Nestled in the serene surroundings of Loretto, our parish family gathers to celebrate the Holy Mass, grow together through the Sacraments, and extend Christ’s love through prayer, community fellowship, and active outreach.
+              {churchName} is a vibrant Catholic parish under the Roman Catholic Diocese of Mangalore. Nestled in the serene surroundings of Loretto, our parish family gathers to celebrate the Holy Mass, grow together through the Sacraments, and extend Christ’s love through prayer, community fellowship, and active outreach.
             </p>
             
             <p className="welcome__text">

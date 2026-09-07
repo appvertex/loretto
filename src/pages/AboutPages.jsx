@@ -5,7 +5,8 @@ import { Landmark, Shield } from 'lucide-react';
 import { useParishData } from '../context/ParishContext';
 
 export const OurParishPage = () => {
-  const { parishFacts } = useParishData();
+  const { parishFacts, siteSettings } = useParishData();
+  const churchName = siteSettings.churchName || 'Our Lady of Loretto Church';
 
   return (
     <main className="inner-page">
@@ -20,24 +21,24 @@ export const OurParishPage = () => {
 
       <section className="section section--white">
         <div className="container" style={{ maxWidth: '900px' }}>
-          <h2 className="section-heading__title" style={{ marginBottom: '1.5rem' }}>Welcome to Our Lady of Loretto Parish</h2>
+          <h2 className="section-heading__title" style={{ marginBottom: '1.5rem' }}>Welcome to {churchName} Parish</h2>
 
           {/* Church exterior photo */}
           <div style={{ position: 'relative', marginBottom: '2.5rem', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-strong)', border: '2px solid var(--gold-antique)' }}>
             <img
               src={`${import.meta.env.BASE_URL}images/church-exterior.jpg`}
-              alt="Our Lady of Loretto Church, Loretto, Mangalore"
+                alt={`${churchName}, Loretto, Mangalore`}
               style={{ width: '100%', height: '420px', objectFit: 'cover', display: 'block' }}
             />
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(53,21,27,0.75) 0%, transparent 100%)', padding: '1.25rem 1.5rem' }}>
               <p style={{ color: 'var(--gold-light)', fontFamily: 'var(--font-serif)', fontSize: '1.1rem', margin: 0, letterSpacing: '0.03em' }}>
-                Our Lady of Loretto Church — Loretto, Mangalore
+                {churchName} — Loretto, Mangalore
               </p>
             </div>
           </div>
 
           <p style={{ fontSize: '1.05rem', lineHeight: '1.8', marginBottom: '1.25rem' }}>
-            Our Lady of Loretto Church, situated in Loretto, Mangalore, is a sacred home of faith, hope and Christian service. Our parish community is dedicated to worshipping God, growing in communion, and spreading Christ's love across the region.
+            {churchName}, situated in Loretto, Mangalore, is a sacred home of faith, hope and Christian service. Our parish community is dedicated to worshipping God, growing in communion, and spreading Christ's love across the region.
           </p>
 
           <div className="grid-2" style={{ margin: '2.5rem 0' }}>
