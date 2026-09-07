@@ -194,6 +194,7 @@ export default {
     const url = new URL(request.url);
     const pathname = url.pathname;
     const isApiRequest = pathname.startsWith('/api/');
+    const isImageRequest = pathname.startsWith('/images/');
 
     // Handle CORS Preflight
     if (request.method === 'OPTIONS') {
@@ -201,7 +202,7 @@ export default {
     }
 
     try {
-      if (!isApiRequest && env.ASSETS) {
+      if (!isApiRequest && !isImageRequest && env.ASSETS) {
         return env.ASSETS.fetch(request);
       }
 
