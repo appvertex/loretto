@@ -1,14 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
+import { useParishData } from '../../context/ParishContext';
 import { news } from '../../data/news';
 import './Navbar.css';
 
+const defaultNavigationVisibility = {
+  home: true,
+  about: true,
+  parish: true,
+  wards: true,
+  institutions: true,
+  organizations: true,
+  newsEvents: true,
+  obituary: true,
+  media: true,
+  contact: true,
+};
+
 const navItems = [
-  { label: 'Home', path: '/' },
+  { label: 'Home', path: '/', visibilityKey: 'home' },
   {
     label: 'About',
     path: '/about',
+    visibilityKey: 'about',
     dropdown: [
       { label: 'Our Parish', path: '/about/our-parish' },
       { label: 'Church History', path: '/about/history' },
@@ -19,6 +34,7 @@ const navItems = [
   {
     label: 'Parish',
     path: '/parish',
+    visibilityKey: 'parish',
     dropdown: [
       { label: 'Parish Priest', path: '/parish/parish-priest' },
       { label: 'Parish Council', path: '/parish/parish-council' },
@@ -26,11 +42,12 @@ const navItems = [
       { label: 'Parish Institutions', path: '/institutions' },
     ],
   },
-  { label: 'Wards', path: '/wards' },
-  { label: 'Institutions', path: '/institutions' },
+  { label: 'Wards', path: '/wards', visibilityKey: 'wards' },
+  { label: 'Institutions', path: '/institutions', visibilityKey: 'institutions' },
   {
     label: 'Organizations',
     path: '/organizations',
+    visibilityKey: 'organizations',
     dropdown: [
       { label: 'ICYM', path: '/organizations/icym' },
       { label: 'YCS', path: '/organizations/ycs' },
@@ -45,22 +62,24 @@ const navItems = [
   {
     label: 'News & Events',
     path: '/news',
+    visibilityKey: 'newsEvents',
     dropdown: [
       { label: 'Latest News', path: '/news' },
       { label: 'Upcoming Events', path: '/events' },
     ],
   },
-  { label: 'Obituary', path: '/obituary' },
+  { label: 'Obituary', path: '/obituary', visibilityKey: 'obituary' },
   {
     label: 'Media',
     path: '/media',
+    visibilityKey: 'media',
     dropdown: [
       { label: 'Gallery', path: '/media/gallery' },
       { label: 'Videos', path: '/media/videos' },
       { label: 'Parish Newsletter', path: '/media/newsletter' },
     ],
   },
-  { label: 'Contact', path: '/contact' },
+  { label: 'Contact', path: '/contact', visibilityKey: 'contact' },
 ];
 
 // Duplicate for seamless loop
@@ -71,6 +90,12 @@ const Navbar = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const location = useLocation();
+  const { siteSettings } = useParishData();
+  const navigationVisibility = {
+    ...defaultNavigationVisibility,
+    ...(siteSettings.navigationVisibility || {}),
+  };
+  const visibleNavItems = navItems.filter((item) => navigationVisibility[item.visibilityKey]);
   const navRef = useRef(null);
 
   useEffect(() => {
@@ -170,7 +195,7 @@ const Navbar = () => {
 
           {/* Nav Links in Center/Right */}
           <ul className="navbar__list" role="menubar">
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <li
                 key={item.label}
                 className={`navbar__item ${item.dropdown ? 'navbar__item--has-dropdown' : ''} ${isActive(item.path) ? 'navbar__item--active' : ''}`}
@@ -244,7 +269,7 @@ const Navbar = () => {
         </div>
         <div className="navbar__mobile-inner">
           <ul className="navbar__mobile-list">
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <li key={item.label} className="navbar__mobile-item">
                 <div className="navbar__mobile-row">
                   <Link to={item.path} className="navbar__mobile-link">

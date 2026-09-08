@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckCircle2, ImagePlus, Loader2, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { useParishData } from '../../context/ParishContext';
 import { api } from '../../api/client';
@@ -14,6 +14,19 @@ const blankSlide = {
   secondaryCtaTo: '/',
 };
 
+const navigationTabs = [
+  { key: 'home', label: 'Home' },
+  { key: 'about', label: 'About' },
+  { key: 'parish', label: 'Parish' },
+  { key: 'wards', label: 'Wards' },
+  { key: 'institutions', label: 'Institutions' },
+  { key: 'organizations', label: 'Organizations' },
+  { key: 'newsEvents', label: 'News & Events' },
+  { key: 'obituary', label: 'Obituary' },
+  { key: 'media', label: 'Media' },
+  { key: 'contact', label: 'Contact' },
+];
+
 const AdminSiteSettingsSection = () => {
   const { siteSettings, updateSiteSettings } = useParishData();
   const [formData, setFormData] = useState(() => ({
@@ -23,6 +36,13 @@ const AdminSiteSettingsSection = () => {
   const [uploadingSlideId, setUploadingSlideId] = useState(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    setFormData({
+      ...siteSettings,
+      heroSlides: siteSettings.heroSlides || [],
+    });
+  }, [siteSettings]);
 
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -35,6 +55,17 @@ const AdminSiteSettingsSection = () => {
       heroSlides: prev.heroSlides.map(slide => (
         slide.id === slideId ? { ...slide, [field]: value } : slide
       )),
+    }));
+    setSavedSuccess(false);
+  };
+
+  const updateNavigationVisibility = (key, isVisible) => {
+    setFormData(prev => ({
+      ...prev,
+      navigationVisibility: {
+        ...(prev.navigationVisibility || {}),
+        [key]: isVisible,
+      },
     }));
     setSavedSuccess(false);
   };
@@ -117,6 +148,33 @@ const AdminSiteSettingsSection = () => {
               placeholder="Loretto, Bantwal"
             />
           </div>
+        </div>
+
+        <div className="admin-settings-divider" />
+
+        <div className="admin-card__header" style={{ padding: 0 }}>
+          <h3 className="admin-card__title" style={{ fontSize: '1.2rem' }}>Public Navbar Tabs</h3>
+          <p className="admin-card__subtitle">Pause a tab to hide it from the public desktop and mobile navigation. Its page and route will remain available.</p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          {navigationTabs.map((tab) => {
+            const isVisible = formData.navigationVisibility?.[tab.key] !== false;
+            return (
+              <label key={tab.key} style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', padding: '0.85rem 1rem', border: '1px solid var(--border-gold)', borderRadius: 'var(--radius-sm)', background: isVisible ? 'var(--cream)' : 'rgba(122, 31, 43, 0.06)', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={isVisible}
+                  onChange={(event) => updateNavigationVisibility(tab.key, event.target.checked)}
+                  style={{ width: '1rem', height: '1rem', accentColor: 'var(--gold-antique)' }}
+                />
+                <span style={{ color: 'var(--brown-primary)', fontWeight: 600 }}>{tab.label}</span>
+                <span style={{ marginLeft: 'auto', fontSize: '0.7rem', color: isVisible ? 'var(--gold-antique)' : 'var(--brown-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  {isVisible ? 'Shown' : 'Paused'}
+                </span>
+              </label>
+            );
+          })}
         </div>
 
         <div className="admin-settings-divider" />

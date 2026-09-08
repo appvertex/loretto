@@ -84,6 +84,15 @@ const normalizeLeadership = (value) => ({
   )),
 });
 
+const mergeSiteSettings = (settings = {}) => ({
+  ...initialSiteSettings,
+  ...settings,
+  navigationVisibility: {
+    ...initialSiteSettings.navigationVisibility,
+    ...(settings.navigationVisibility || {}),
+  },
+});
+
 export const ParishProvider = ({ children }) => {
   // 1. Leadership State
   const [leadership, setLeadership] = useState(() => {
@@ -210,7 +219,7 @@ export const ParishProvider = ({ children }) => {
   const [siteSettings, setSiteSettings] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.SITE_SETTINGS);
-      return saved ? { ...initialSiteSettings, ...JSON.parse(saved) } : initialSiteSettings;
+      return saved ? mergeSiteSettings(JSON.parse(saved)) : initialSiteSettings;
     } catch {
       return initialSiteSettings;
     }
@@ -272,7 +281,7 @@ export const ParishProvider = ({ children }) => {
       if (Object.hasOwn(content, CONTENT_KEYS.OBITUARIES)) setObituaries(content[CONTENT_KEYS.OBITUARIES]);
       if (Object.hasOwn(content, CONTENT_KEYS.INSTITUTIONS)) setInstitutions(content[CONTENT_KEYS.INSTITUTIONS]);
       if (Object.hasOwn(content, CONTENT_KEYS.SITE_SETTINGS)) {
-        setSiteSettings({ ...initialSiteSettings, ...content[CONTENT_KEYS.SITE_SETTINGS] });
+        setSiteSettings(mergeSiteSettings(content[CONTENT_KEYS.SITE_SETTINGS]));
       }
       if (Object.hasOwn(content, CONTENT_KEYS.ABOUT)) {
         setAboutContent(mergeAboutContent(content[CONTENT_KEYS.ABOUT]));
@@ -1013,7 +1022,7 @@ export const ParishProvider = ({ children }) => {
   };
 
   const updateSiteSettings = (updatedSettings) => {
-    setSiteSettings(prev => ({ ...prev, ...updatedSettings }));
+    setSiteSettings(prev => mergeSiteSettings({ ...prev, ...updatedSettings }));
   };
 
   const updateAboutContent = (updatedContent) => {
