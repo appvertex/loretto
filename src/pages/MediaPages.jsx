@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Calendar } from 'lucide-react';
-import { Check, Copy, Share2 } from 'lucide-react';
+import { Check, Copy, Image as ImageIcon, Share2 } from 'lucide-react';
 import { useEffect } from 'react';
 import LatestNewsSection from '../components/home/LatestNewsSection';
 import UpcomingEventsSection from '../components/home/UpcomingEventsSection';
@@ -100,6 +100,30 @@ export const NewsArticlePage = () => {
     await handleCopyLink();
   };
 
+  const handleShareImage = async () => {
+    try {
+      const response = await fetch(new URL(article.image, window.location.origin).href);
+      const blob = await response.blob();
+      const file = new File([blob], `${article.slug || 'news-article'}.jpg`, {
+        type: blob.type || 'image/jpeg',
+      });
+
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: article.title,
+          text: `${article.title}\n${articleUrl}`,
+        });
+        return;
+      }
+    } catch {
+      // Fall through to the image page and copied link for unsupported devices.
+    }
+
+    await handleCopyLink();
+    window.open(new URL(article.image, window.location.origin).href, '_blank', 'noopener,noreferrer');
+  };
+
   if (!article) {
     return (
       <main className="news-article-page">
@@ -169,6 +193,9 @@ export const NewsArticlePage = () => {
               <button type="button" className="news-article__copy-button" onClick={handleCopyLink}>
                 {copied ? <Check size={15} /> : <Copy size={15} />}
                 {copied ? 'Link Copied' : 'Copy Link'}
+              </button>
+              <button type="button" className="news-article__copy-button" onClick={handleShareImage}>
+                <ImageIcon size={15} /> Share Main Image
               </button>
             </div>
             {article.excerpt && <p className="news-article__excerpt">{article.excerpt}</p>}
