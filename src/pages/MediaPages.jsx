@@ -1,6 +1,8 @@
 ﻿import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Calendar } from 'lucide-react';
+import { Check, Copy, Share2 } from 'lucide-react';
+import { useEffect } from 'react';
 import LatestNewsSection from '../components/home/LatestNewsSection';
 import UpcomingEventsSection from '../components/home/UpcomingEventsSection';
 import GallerySection from '../components/home/GallerySection';
@@ -29,8 +31,74 @@ export const NewsArticlePage = () => {
   const { slug } = useParams();
   const { news } = useParishData();
   const [activeImageIndex, setActiveImageIndex] = useState(null);
+  const [copied, setCopied] = useState(false);
   const articles = news?.length ? news : fallbackNews;
   const article = articles.find((item) => item.slug === slug);
+  const articleUrl = article ? `${window.location.origin}/news/${article.slug}` : '';
+
+  useEffect(() => {
+    if (!article) return undefined;
+
+    const previousTitle = document.title;
+    const metadata = [
+      ['property', 'og:title', article.title],
+      ['property', 'og:description', article.excerpt || article.content || 'Parish news from Our Lady of Loretto Church.'],
+      ['property', 'og:image', new URL(article.image, window.location.origin).href],
+      ['property', 'og:url', articleUrl],
+      ['name', 'twitter:card', 'summary_large_image'],
+      ['name', 'twitter:title', article.title],
+      ['name', 'twitter:description', article.excerpt || article.content || 'Parish news from Our Lady of Loretto Church.'],
+      ['name', 'twitter:image', new URL(article.image, window.location.origin).href],
+    ];
+    const createdMetadata = metadata.map(([attribute, key, content]) => {
+      let element = document.head.querySelector(`meta[${attribute}="${key}"]`);
+      const wasExisting = Boolean(element);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attribute, key);
+        document.head.appendChild(element);
+      }
+      const previousContent = element.getAttribute('content');
+      element.setAttribute('content', content);
+      return { element, wasExisting, previousContent };
+    });
+    document.title = `${article.title} | Our Lady of Loretto Church`;
+
+    return () => {
+      document.title = previousTitle;
+      createdMetadata.forEach(({ element, wasExisting, previousContent }) => {
+        if (wasExisting) element.setAttribute('content', previousContent || '');
+        else element.remove();
+      });
+    };
+  }, [article, articleUrl]);
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(articleUrl);
+    } catch {
+      const input = document.createElement('input');
+      input.value = articleUrl;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      input.remove();
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      await navigator.share({
+        title: article.title,
+        text: article.excerpt || 'Read this parish news update.',
+        url: articleUrl,
+      });
+      return;
+    }
+    await handleCopyLink();
+  };
 
   if (!article) {
     return (
@@ -94,6 +162,15 @@ export const NewsArticlePage = () => {
               </span>
             </div>
             <h2>{article.title}</h2>
+            <div className="news-article__share-actions" aria-label="Share this news article">
+              <button type="button" className="news-article__share-button" onClick={handleShare}>
+                <Share2 size={15} /> Share Article
+              </button>
+              <button type="button" className="news-article__copy-button" onClick={handleCopyLink}>
+                {copied ? <Check size={15} /> : <Copy size={15} />}
+                {copied ? 'Link Copied' : 'Copy Link'}
+              </button>
+            </div>
             {article.excerpt && <p className="news-article__excerpt">{article.excerpt}</p>}
             <div className="news-article__body">
               {(article.content || article.excerpt || '').split('\n').map((paragraph, index) => (

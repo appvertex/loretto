@@ -39,6 +39,62 @@ const CONTENT_KEYS = new Set([
   'aboutContent',
 ]);
 
+const fallbackNewsMetadata = {
+  'parish-feast-preparations': { title: 'Parish Feast Preparations Underway', image: '/images/hero-community.jpg' },
+  'catechism-new-year': { title: 'New Catechism Year Begins', image: '/images/quick-groups.jpg' },
+  'youth-blood-donation': { title: 'Youth Group Organises Blood Donation Camp', image: '/images/quick-groups.jpg' },
+  'newsletter-august-2026': { title: 'Parish Newsletter - August 2026', image: '/images/newsletter-cover.jpg' },
+  'womens-association-feast': { title: "Women's Association Celebrates Feast of Our Lady", image: '/images/hero-community.jpg' },
+  'church-renovation': { title: 'Church Renovation Work Completed', image: '/images/hero-exterior.jpg' },
+};
+
+const escapeHtml = (value = '') => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
+async function getNewsMetadata(db, slug) {
+  const fallback = fallbackNewsMetadata[slug];
+  try {
+    const row = await db.prepare('SELECT content_json FROM site_content WHERE content_key = ?')
+      .bind('news')
+      .first();
+    const articles = row?.content_json ? JSON.parse(row.content_json) : [];
+    const article = Array.isArray(articles) ? articles.find((item) => item.slug === slug) : null;
+    if (article) {
+      return {
+        title: article.title,
+        description: article.excerpt || article.content || '',
+        image: article.image || fallback?.image || '/images/hero-community.jpg',
+      };
+    }
+  } catch {
+    // Use the bundled fallback metadata when shared content is unavailable.
+  }
+  return fallback || null;
+}
+
+function injectNewsMetadata(html, metadata, requestUrl) {
+  const url = new URL(requestUrl);
+  const imageUrl = new URL(metadata.image, url.origin).href;
+  const articleUrl = url.href;
+  const title = `${metadata.title} | Our Lady of Loretto Church`;
+  const description = metadata.description || 'Parish news from Our Lady of Loretto Church.';
+  const tags = [
+    `<meta property="og:title" content="${escapeHtml(title)}">`,
+    `<meta property="og:description" content="${escapeHtml(description)}">`,
+    `<meta property="og:image" content="${escapeHtml(imageUrl)}">`,
+    `<meta property="og:url" content="${escapeHtml(articleUrl)}">`,
+    '<meta name="twitter:card" content="summary_large_image">',
+    `<meta name="twitter:title" content="${escapeHtml(title)}">`,
+    `<meta name="twitter:description" content="${escapeHtml(description)}">`,
+    `<meta name="twitter:image" content="${escapeHtml(imageUrl)}">`,
+  ].join('\n    ');
+  return html.replace('</head>', `    ${tags}\n  </head>`);
+}
+
 function bytesToHex(buffer) {
   return [...new Uint8Array(buffer)]
     .map((byte) => byte.toString(16).padStart(2, '0'))
@@ -416,14 +472,27 @@ export default {
       }
 
       if (env.ASSETS) {
-        const assetResponse = await env.ASSETS.fetch(request);
+        let assetResponse = await env.ASSETS.fetch(request);
         const acceptsHtml = request.headers.get('Accept')?.includes('text/html');
-        const pathnameHasFileExtension = new URL(request.url).pathname.includes('.');
+        const requestUrl = new URL(request.url);
+        const pathnameHasFileExtension = requestUrl.pathname.includes('.');
 
         // Cloudflare Workers do not always apply Pages' _redirects before this
         // handler, so explicitly serve the SPA shell for client-side routes.
         if (assetResponse.status === 404 && request.method === 'GET' && acceptsHtml && !pathnameHasFileExtension) {
-          return env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+          assetResponse = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+        }
+
+        const newsMatch = requestUrl.pathname.match(/^\/news\/([^/]+)$/);
+        if (assetResponse.ok && request.method === 'GET' && acceptsHtml && newsMatch) {
+          const metadata = await getNewsMetadata(env.DB, decodeURIComponent(newsMatch[1]));
+          if (metadata) {
+            const html = injectNewsMetadata(await assetResponse.text(), metadata, request.url);
+            return new Response(html, {
+              status: assetResponse.status,
+              headers: new Headers(assetResponse.headers),
+            });
+          }
         }
 
         return assetResponse;
