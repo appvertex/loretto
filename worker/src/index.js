@@ -260,7 +260,28 @@ export default {
 
     try {
       if (!isApiRequest && env.ASSETS) {
-        return env.ASSETS.fetch(request);
+        let assetResponse = await env.ASSETS.fetch(request);
+        const acceptsHtml = request.headers.get('Accept')?.includes('text/html');
+        const pathnameHasFileExtension = pathname.includes('.');
+
+        // Serve the SPA shell for client-side routes on direct browser requests.
+        if (assetResponse.status === 404 && request.method === 'GET' && acceptsHtml && !pathnameHasFileExtension) {
+          assetResponse = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+        }
+
+        const newsMatch = pathname.match(/^\/news\/([^/]+)$/);
+        if (assetResponse.ok && request.method === 'GET' && acceptsHtml && newsMatch) {
+          const metadata = await getNewsMetadata(env.DB, decodeURIComponent(newsMatch[1]));
+          if (metadata) {
+            const html = injectNewsMetadata(await assetResponse.text(), metadata, request.url);
+            return new Response(html, {
+              status: assetResponse.status,
+              headers: new Headers(assetResponse.headers),
+            });
+          }
+        }
+
+        return assetResponse;
       }
 
       if (!env.DB) {
@@ -469,33 +490,6 @@ export default {
           'INSERT INTO prayer_intentions (id, full_name, phone, email, intention_type, message) VALUES (?, ?, ?, ?, ?, ?)'
         ).bind(id, body.full_name, body.phone || '', body.email || '', body.intention_type || 'general', body.message).run();
         return jsonResponse({ success: true, message: 'Prayer intention submitted successfully', id }, 201);
-      }
-
-      if (env.ASSETS) {
-        let assetResponse = await env.ASSETS.fetch(request);
-        const acceptsHtml = request.headers.get('Accept')?.includes('text/html');
-        const requestUrl = new URL(request.url);
-        const pathnameHasFileExtension = requestUrl.pathname.includes('.');
-
-        // Cloudflare Workers do not always apply Pages' _redirects before this
-        // handler, so explicitly serve the SPA shell for client-side routes.
-        if (assetResponse.status === 404 && request.method === 'GET' && acceptsHtml && !pathnameHasFileExtension) {
-          assetResponse = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
-        }
-
-        const newsMatch = requestUrl.pathname.match(/^\/news\/([^/]+)$/);
-        if (assetResponse.ok && request.method === 'GET' && acceptsHtml && newsMatch) {
-          const metadata = await getNewsMetadata(env.DB, decodeURIComponent(newsMatch[1]));
-          if (metadata) {
-            const html = injectNewsMetadata(await assetResponse.text(), metadata, request.url);
-            return new Response(html, {
-              status: assetResponse.status,
-              headers: new Headers(assetResponse.headers),
-            });
-          }
-        }
-
-        return assetResponse;
       }
 
       // Default 404 Route
