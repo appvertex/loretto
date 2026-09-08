@@ -163,7 +163,7 @@ const Navbar = () => {
           <Link to="/" className="navbar__brand" aria-label="Our Lady of Loretto Church, Bantwal Home">
             <img src={logoUrl} alt="Loretto Church Logo" className="navbar__brand-logo" />
             <div className="navbar__brand-text">
-              <span className="navbar__brand-title">OUR LADY OF LORETTO CHURCH</span>
+              <span className="navbar__brand-title">OUR LADY OF LORETO CHURCH</span>
               <span className="navbar__brand-sub">BANTWAL</span>
             </div>
           </Link>
