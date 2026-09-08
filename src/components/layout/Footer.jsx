@@ -84,7 +84,6 @@ const Footer = () => {
             <Link to="/institutions">Institutions</Link>
             <Link to="/media/gallery">Gallery</Link>
             <Link to="/contact">Contact</Link>
-            <Link to="/admin" style={{ color: 'var(--gold-antique)', fontWeight: 600 }}>Admin Portal</Link>
           </nav>
 
           {/* Social Icons */}
