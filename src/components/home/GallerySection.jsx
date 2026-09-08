@@ -37,7 +37,7 @@ const GallerySection = () => {
             items={accordionItems}
             defaultIndex={2}
             accentColor="#C6A15B"
-            overlayColor="#35151B"
+            overlayColor="#262125"
             textColor="#FAF7F0"
             height={500}
             gap={14}
