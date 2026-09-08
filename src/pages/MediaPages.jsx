@@ -32,10 +32,11 @@ export const NewsArticlePage = () => {
   const { news } = useParishData();
   const [activeImageIndex, setActiveImageIndex] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [shareVersion] = useState(() => Date.now());
   const articles = news?.length ? news : fallbackNews;
   const article = articles.find((item) => item.slug === slug);
   const articleUrl = article ? `${window.location.origin}/news/${article.slug}` : '';
-  const shareUrl = article ? `${window.location.origin}/api/share/news/${article.slug}?v=${encodeURIComponent(article.date || article.displayDate || 'latest')}` : '';
+  const shareUrl = article ? `${window.location.origin}/api/share/news/${article.slug}?v=${shareVersion}` : '';
 
   useEffect(() => {
     if (!article) return undefined;
