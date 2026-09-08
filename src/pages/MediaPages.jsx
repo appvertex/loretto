@@ -35,6 +35,7 @@ export const NewsArticlePage = () => {
   const articles = news?.length ? news : fallbackNews;
   const article = articles.find((item) => item.slug === slug);
   const articleUrl = article ? `${window.location.origin}/news/${article.slug}` : '';
+  const shareUrl = article ? `${window.location.origin}/api/share/news/${article.slug}` : '';
 
   useEffect(() => {
     if (!article) return undefined;
@@ -89,36 +90,21 @@ export const NewsArticlePage = () => {
   };
 
   const handleShare = async () => {
-    const shareText = `${article.title}\n${articleUrl}`;
-
-    try {
-      const response = await fetch(new URL(article.image, window.location.origin).href);
-      const blob = await response.blob();
-      const file = new File([blob], `${article.slug || 'news-article'}.jpg`, {
-        type: blob.type || 'image/jpeg',
-      });
-
-      if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: article.title,
-          text: shareText,
-        });
-        return;
-      }
-    } catch {
-      // Fall back to link sharing when the image cannot be shared as a file.
-    }
-
     if (navigator.share) {
       await navigator.share({
         title: article.title,
-        text: article.excerpt ? `${article.excerpt}\n${articleUrl}` : shareText,
-        url: articleUrl,
+        text: article.excerpt ? `${article.excerpt}\n${articleUrl}` : articleUrl,
+        url: shareUrl,
       });
       return;
     }
-    await handleCopyLink();
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      await handleCopyLink();
+    }
   };
 
   if (!article) {

@@ -288,6 +288,46 @@ export default {
         return jsonResponse({ error: 'D1 Database binding (DB) not configured' }, 500);
       }
 
+      if (pathname.startsWith('/api/share/news/') && request.method === 'GET') {
+        const slug = decodeURIComponent(pathname.replace('/api/share/news/', ''));
+        const metadata = await getNewsMetadata(env.DB, slug);
+        if (!metadata) return new Response('News article not found', { status: 404 });
+
+        const articleUrl = new URL(`/news/${encodeURIComponent(slug)}`, request.url).href;
+        const imageUrl = new URL(metadata.image, request.url).href;
+        const title = `${metadata.title} | Our Lady of Loretto Church`;
+        const description = metadata.description || 'Parish news from Our Lady of Loretto Church.';
+        const html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>${escapeHtml(title)}</title>
+    <meta name="description" content="${escapeHtml(description)}">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="${escapeHtml(title)}">
+    <meta property="og:description" content="${escapeHtml(description)}">
+    <meta property="og:image" content="${escapeHtml(imageUrl)}">
+    <meta property="og:url" content="${escapeHtml(articleUrl)}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${escapeHtml(title)}">
+    <meta name="twitter:description" content="${escapeHtml(description)}">
+    <meta name="twitter:image" content="${escapeHtml(imageUrl)}">
+    <meta http-equiv="refresh" content="0;url=${escapeHtml(articleUrl)}">
+  </head>
+  <body>
+    <p>Opening <a href="${escapeHtml(articleUrl)}">${escapeHtml(metadata.title)}</a>...</p>
+    <script>window.location.replace(${JSON.stringify(articleUrl)});</script>
+  </body>
+</html>`;
+
+        return new Response(html, {
+          headers: {
+            'Content-Type': 'text/html; charset=UTF-8',
+            'Cache-Control': 'public, max-age=300',
+          },
+        });
+      }
+
       // ----------------------------------------------------
       // ADMIN AUTHENTICATION ROUTE: POST /api/admin/login
       // ----------------------------------------------------
