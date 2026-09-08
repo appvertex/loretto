@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Calendar } from 'lucide-react';
-import { Check, Copy, Image as ImageIcon, Share2 } from 'lucide-react';
+import { Check, Copy, Share2 } from 'lucide-react';
 import { useEffect } from 'react';
 import LatestNewsSection from '../components/home/LatestNewsSection';
 import UpcomingEventsSection from '../components/home/UpcomingEventsSection';
@@ -89,18 +89,8 @@ export const NewsArticlePage = () => {
   };
 
   const handleShare = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: article.title,
-        text: article.excerpt || 'Read this parish news update.',
-        url: articleUrl,
-      });
-      return;
-    }
-    await handleCopyLink();
-  };
+    const shareText = `${article.title}\n${articleUrl}`;
 
-  const handleShareImage = async () => {
     try {
       const response = await fetch(new URL(article.image, window.location.origin).href);
       const blob = await response.blob();
@@ -112,16 +102,23 @@ export const NewsArticlePage = () => {
         await navigator.share({
           files: [file],
           title: article.title,
-          text: `${article.title}\n${articleUrl}`,
+          text: shareText,
         });
         return;
       }
     } catch {
-      // Fall through to the image page and copied link for unsupported devices.
+      // Fall back to link sharing when the image cannot be shared as a file.
     }
 
+    if (navigator.share) {
+      await navigator.share({
+        title: article.title,
+        text: article.excerpt ? `${article.excerpt}\n${articleUrl}` : shareText,
+        url: articleUrl,
+      });
+      return;
+    }
     await handleCopyLink();
-    window.open(new URL(article.image, window.location.origin).href, '_blank', 'noopener,noreferrer');
   };
 
   if (!article) {
@@ -193,9 +190,6 @@ export const NewsArticlePage = () => {
               <button type="button" className="news-article__copy-button" onClick={handleCopyLink}>
                 {copied ? <Check size={15} /> : <Copy size={15} />}
                 {copied ? 'Link Copied' : 'Copy Link'}
-              </button>
-              <button type="button" className="news-article__copy-button" onClick={handleShareImage}>
-                <ImageIcon size={15} /> Share Main Image
               </button>
             </div>
             {article.excerpt && <p className="news-article__excerpt">{article.excerpt}</p>}
