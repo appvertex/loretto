@@ -35,6 +35,7 @@ export const NewsArticlePage = () => {
   const articles = news?.length ? news : fallbackNews;
   const article = articles.find((item) => item.slug === slug);
   const articleUrl = article ? `${window.location.origin}/news/${article.slug}` : '';
+  const shareUrl = article ? `${window.location.origin}/api/share/news/${article.slug}?v=${encodeURIComponent(article.date || article.displayDate || 'latest')}` : '';
 
   useEffect(() => {
     if (!article) return undefined;
@@ -75,10 +76,10 @@ export const NewsArticlePage = () => {
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(articleUrl);
+      await navigator.clipboard.writeText(shareUrl);
     } catch {
       const input = document.createElement('input');
-      input.value = articleUrl;
+      input.value = shareUrl;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
@@ -93,12 +94,12 @@ export const NewsArticlePage = () => {
       await navigator.share({
         title: article.title,
         text: article.excerpt || article.title,
-        url: articleUrl,
+        url: shareUrl,
       });
       return;
     }
     try {
-      await navigator.clipboard.writeText(articleUrl);
+      await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2500);
     } catch {
