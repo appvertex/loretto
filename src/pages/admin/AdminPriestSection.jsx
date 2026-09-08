@@ -31,6 +31,8 @@ const AdminPriestSection = () => {
     designation: assistantPriest.designation || 'Rev. Fr.',
     position: assistantPriest.position || 'Assistant Parish Priest',
     image: assistantPriest.image || '',
+    sectionLabel: assistantPriest.sectionLabel || 'PASTORAL TEAM',
+    sectionTitle: assistantPriest.sectionTitle || 'Assistant Parish Priest',
     sectionHeading: assistantPriest.sectionHeading || 'Pastoral Care & Ministry',
     bio: assistantPriest.bio || defaultAssistantBio,
     highlights: assistantPriest.highlights?.length ? assistantPriest.highlights : defaultAssistantHighlights,
@@ -53,6 +55,8 @@ const AdminPriestSection = () => {
       designation: assistantPriest.designation || 'Rev. Fr.',
       position: assistantPriest.position || 'Assistant Parish Priest',
       image: assistantPriest.image || '',
+      sectionLabel: assistantPriest.sectionLabel || 'PASTORAL TEAM',
+      sectionTitle: assistantPriest.sectionTitle || 'Assistant Parish Priest',
       sectionHeading: assistantPriest.sectionHeading || 'Pastoral Care & Ministry',
       bio: assistantPriest.bio || defaultAssistantBio,
       highlights: assistantPriest.highlights?.length ? assistantPriest.highlights : defaultAssistantHighlights,
@@ -62,6 +66,8 @@ const AdminPriestSection = () => {
     assistantPriest.designation,
     assistantPriest.position,
     assistantPriest.image,
+    assistantPriest.sectionLabel,
+    assistantPriest.sectionTitle,
     assistantPriest.sectionHeading,
     assistantPriest.bio,
     assistantPriest.highlights,
@@ -288,8 +294,36 @@ const AdminPriestSection = () => {
               helpText="Use a square portrait for the cleanest display on the public page."
             />
 
+            <div className="admin-form-grid">
+              <div className="admin-form-group">
+                <label htmlFor="assistant-section-label">Section Label</label>
+                <input
+                  type="text"
+                  id="assistant-section-label"
+                  className="admin-form-control"
+                  value={assistantFormData.sectionLabel}
+                  onChange={(event) => handleAssistantFieldChange('sectionLabel', event.target.value)}
+                  placeholder="PASTORAL TEAM"
+                  required
+                />
+              </div>
+
+              <div className="admin-form-group">
+                <label htmlFor="assistant-section-title">Section Heading</label>
+                <input
+                  type="text"
+                  id="assistant-section-title"
+                  className="admin-form-control"
+                  value={assistantFormData.sectionTitle}
+                  onChange={(event) => handleAssistantFieldChange('sectionTitle', event.target.value)}
+                  placeholder="Assistant Parish Priest"
+                  required
+                />
+              </div>
+            </div>
+
             <div className="admin-form-group">
-              <label htmlFor="assistant-heading">Section Heading</label>
+              <label htmlFor="assistant-heading">Bio Heading</label>
               <input
                 type="text"
                 id="assistant-heading"
@@ -380,6 +414,10 @@ const AdminPriestSection = () => {
             </div>
 
             <div style={{ textAlign: 'center' }}>
+              <span className="section-title-tag">{assistantFormData.sectionLabel || 'PASTORAL TEAM'}</span>
+              <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', color: 'var(--brown-primary)', margin: '0.35rem 0 1rem' }}>
+                {assistantFormData.sectionTitle || 'Assistant Parish Priest'}
+              </h4>
               <span className="assistant-role-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(122, 31, 43, 0.08)', color: 'var(--burgundy-primary)', fontSize: '0.72rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '999px', marginBottom: '0.65rem' }}>
                 <Sparkles size={11} /> {assistantFormData.position || 'Assistant Parish Priest'}
               </span>

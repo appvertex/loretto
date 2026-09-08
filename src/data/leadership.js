@@ -22,6 +22,8 @@ export const leadership = {
       designation: 'Rev. Fr.',
       position: 'Assistant Parish Priest',
       image: `${import.meta.env.BASE_URL}images/fr-jason-vijay-monis.jpg`,
+      sectionLabel: 'PASTORAL TEAM',
+      sectionTitle: 'Assistant Parish Priest',
       sectionHeading: 'Pastoral Care & Ministry',
       bio: 'Assisting in the pastoral care, spiritual formation, and administrative guidance of Our Lady of Loretto Parish. Working alongside the Parish Priest in administering the Holy Sacraments, conducting liturgical celebrations, guiding parish youth and ministries, and serving our community family.',
       highlights: [

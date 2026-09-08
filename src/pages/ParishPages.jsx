@@ -99,8 +99,8 @@ export const ParishPriestPage = () => {
           {assistantPriest && (
             <div className="assistant-section-wrap">
               <div className="section-title-wrap">
-                <span className="section-title-tag">PASTORAL TEAM</span>
-                <h2 className="section-title-heading">Assistant Parish Priest</h2>
+                <span className="section-title-tag">{assistantPriest.sectionLabel || 'PASTORAL TEAM'}</span>
+                <h2 className="section-title-heading">{assistantPriest.sectionTitle || 'Assistant Parish Priest'}</h2>
                 <div className="gold-accent-line" aria-hidden="true" />
               </div>
 
