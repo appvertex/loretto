@@ -27,7 +27,7 @@ const PatronessAndPriestSection = () => {
           <div className="combined-section__patroness-img-wrap">
             <img
               src={`${import.meta.env.BASE_URL}images/patroness-mary.jpg`}
-              alt="Our Lady of Loretto Statue and Marian Devotion"
+              alt="Our Lady of Loreto Statue and Marian Devotion"
               className="combined-section__patroness-img"
             />
             <div className="combined-section__patroness-img-overlay" aria-hidden="true" />
@@ -36,14 +36,14 @@ const PatronessAndPriestSection = () => {
           {/* Content */}
           <div className="combined-section__patroness-body">
             <span className="combined-section__eyebrow">Our Patroness</span>
-            <h2 className="combined-section__patroness-title">Our Lady of Loretto</h2>
+            <h2 className="combined-section__patroness-title">Our Lady of Loreto</h2>
 
             <blockquote className="combined-section__patroness-quote">
-              "OUR LADY OF LORETTO, PRAY FOR US."
+              "OUR LADY OF LORETO, PRAY FOR US."
             </blockquote>
 
             <p className="combined-section__patroness-text">
-              Our Lady of Loretto is the title given to the Blessed Virgin Mary associated with
+              Our Lady of Loreto is the title given to the Blessed Virgin Mary associated with
               the Holy House of Loreto. According to Catholic tradition, this is the very house
               in Nazareth where the Annunciation took place and where the Holy Family resided.
             </p>

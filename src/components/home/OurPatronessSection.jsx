@@ -6,7 +6,7 @@ import './OurPatronessSection.css';
 
 const OurPatronessSection = () => {
   return (
-    <section className="patroness section section--dark" aria-label="Our Patroness Our Lady of Loretto">
+    <section className="patroness section section--dark" aria-label="Our Patroness Our Lady of Loreto">
       <div className="container">
         <div className="patroness__grid">
           <motion.div
@@ -16,14 +16,14 @@ const OurPatronessSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
-            <h2 className="patroness__title">Our Lady of Loretto</h2>
+        <h2 className="patroness__title">Our Lady of Loreto</h2>
             
             <blockquote className="patroness__quote">
-              <span>"OUR LADY OF LORETTO, PRAY FOR US."</span>
+          <span>"OUR LADY OF LORETO, PRAY FOR US."</span>
             </blockquote>
 
             <p className="patroness__text">
-              Our Lady of Loretto is the title given to the Blessed Virgin Mary associated with the Holy House of Loreto. According to Catholic tradition, this is the very house in Nazareth where the Annunciation took place and where the Holy Family resided.
+              Our Lady of Loreto is the title given to the Blessed Virgin Mary associated with the Holy House of Loreto. According to Catholic tradition, this is the very house in Nazareth where the Annunciation took place and where the Holy Family resided.
             </p>
 
             <p className="patroness__text">
@@ -54,7 +54,7 @@ const OurPatronessSection = () => {
           >
             <img
               src={`${import.meta.env.BASE_URL}images/patroness-mary.jpg`}
-              alt="Our Lady of Loretto Statue and Marian Devotion"
+              alt="Our Lady of Loreto Statue and Marian Devotion"
               className="patroness__image"
             />
           </motion.div>
