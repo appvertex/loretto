@@ -42,7 +42,9 @@ const AdminNewsSection = () => {
       (item.content && item.content.toLowerCase().includes(q));
 
     return matchesCategory && matchesSearch;
-  });
+  }).sort(
+    (a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()
+  );
 
   // -------------------------------------------------------------
   // MODAL OPEN HANDLERS

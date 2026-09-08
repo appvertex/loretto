@@ -9,6 +9,9 @@ import './LatestNewsSection.css';
 const LatestNewsSection = () => {
   const { news } = useParishData();
   const activeNews = (news && news.length > 0) ? news : fallbackNews;
+  const latestNews = [...activeNews].sort(
+    (a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()
+  );
 
   return (
     <section className="latest-news section section--cream" aria-label="Latest News & Announcements">
@@ -21,7 +24,7 @@ const LatestNewsSection = () => {
         </div>
 
         <div className="latest-news__grid">
-          {activeNews.slice(0, 3).map((item, index) => (
+          {latestNews.slice(0, 3).map((item, index) => (
             <motion.article
               key={item.id}
               className="news-card"
