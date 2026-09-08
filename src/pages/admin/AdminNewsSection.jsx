@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
 import { newsCategories as initialCategories } from '../../data/news';
 import ImageUploadField from '../../components/common/ImageUploadField';
+import BulkImageUploadField from '../../components/common/BulkImageUploadField';
 import {
   Plus,
   Trash2,
@@ -54,6 +55,7 @@ const AdminNewsSection = () => {
       category: 'Parish',
       date: today,
       image: `${import.meta.env.BASE_URL}images/hero-community.jpg`,
+      subImages: [],
       featured: false,
       excerpt: '',
       content: '',
@@ -68,6 +70,7 @@ const AdminNewsSection = () => {
       category: item.category || 'Parish',
       date: item.date || new Date().toISOString().split('T')[0],
       image: item.image || `${import.meta.env.BASE_URL}images/hero-community.jpg`,
+      subImages: item.subImages || [],
       featured: item.featured || false,
       excerpt: item.excerpt || '',
       content: item.content || '',
@@ -340,6 +343,11 @@ const AdminNewsSection = () => {
                 </div>
 
                 <ImageUploadField id="news-cover-image" label="Cover Photo Image *" value={modalData.image} onChange={(image) => setModalData({ ...modalData, image })} placeholder="Paste an image URL or upload a file" required />
+
+                <BulkImageUploadField
+                  images={modalData.subImages || []}
+                  onChange={(subImages) => setModalData({ ...modalData, subImages })}
+                />
 
                 <div className="admin-form-group">
                   <label>Short Excerpt / Summary *</label>

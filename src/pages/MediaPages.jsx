@@ -82,6 +82,14 @@ export const NewsArticlePage = () => {
             </div>
           </div>
         </div>
+
+        {article.subImages?.length > 0 && (
+          <div className="news-article__gallery" aria-label="Additional news images">
+            {article.subImages.map((image, index) => (
+              <img key={`${image}-${index}`} src={image} alt={`${article.title} ${index + 2}`} />
+            ))}
+          </div>
+        )}
       </article>
     </main>
   );

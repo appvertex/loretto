@@ -743,6 +743,7 @@ export const ParishProvider = ({ children }) => {
       excerpt: '',
       content: '',
       image: `${import.meta.env.BASE_URL}images/hero-community.jpg`,
+      subImages: [],
       featured: false,
       ...newsData,
     };
