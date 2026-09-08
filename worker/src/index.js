@@ -280,10 +280,12 @@ export default {
         // Admin is also a client-side route; always return the SPA shell with
         // a successful status so direct navigation and hard refresh work.
         if (isAdminRoute && request.method === 'GET') {
-          const shell = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+          const shell = await env.ASSETS.fetch(new Request(new URL('/', request.url), request));
+          const headers = new Headers(shell.headers);
+          headers.delete('Location');
           return new Response(shell.body, {
             status: 200,
-            headers: new Headers(shell.headers),
+            headers,
           });
         }
 
