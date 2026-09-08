@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
+import ImageUploadField from '../../components/common/ImageUploadField';
 import {
   Plus,
   Trash2,
@@ -401,16 +402,7 @@ const AdminObituarySection = () => {
                     />
                   </div>
 
-                  <div className="admin-form-group">
-                    <label>Profile Photo URL</label>
-                    <input
-                      type="text"
-                      className="admin-form-control"
-                      placeholder="https://... or images/photo.jpg"
-                      value={modalData.photo || ''}
-                      onChange={(e) => setModalData({ ...modalData, photo: e.target.value })}
-                    />
-                  </div>
+                  <ImageUploadField id="obituary-profile-photo" label="Profile Photo" value={modalData.photo} onChange={(photo) => setModalData({ ...modalData, photo })} placeholder="Paste an image URL or upload a file" />
                 </div>
 
                 <div className="admin-form-group">

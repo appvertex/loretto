@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
+import ImageUploadField from '../../components/common/ImageUploadField';
 import { Plus, Trash2, Edit3, Save, CheckCircle2, X } from 'lucide-react';
 
 const AdminCouncilSection = () => {
@@ -191,16 +192,7 @@ const AdminCouncilSection = () => {
                   />
                 </div>
 
-                <div className="admin-form-group">
-                  <label>Photo URL / Image Path</label>
-                  <input
-                    type="text"
-                    className="admin-form-control"
-                    placeholder="e.g. images/member-photo.jpg or full URL"
-                    value={formState.image}
-                    onChange={(e) => setFormState({ ...formState, image: e.target.value })}
-                  />
-                </div>
+                <ImageUploadField id="council-member-image" label="Member Photo" value={formState.image} onChange={(image) => setFormState({ ...formState, image })} placeholder="Paste an image URL or upload a file" />
               </div>
 
               <div className="admin-modal-footer">

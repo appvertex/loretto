@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
+import ImageUploadField from '../../components/common/ImageUploadField';
 import { Plus, Trash2, Edit3, Save, CheckCircle2, ArrowUp, ArrowDown, X } from 'lucide-react';
 
 const AdminHistorySection = () => {
@@ -231,6 +232,8 @@ const AdminHistorySection = () => {
                     required
                   />
                 </div>
+
+                <ImageUploadField id="history-milestone-image" label="Milestone Image" value={formState.image} onChange={(image) => setFormState({ ...formState, image })} placeholder="Paste an image URL or upload a file" />
               </div>
 
               <div className="admin-modal-footer">

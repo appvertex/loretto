@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
+import ImageUploadField from '../../components/common/ImageUploadField';
 import {
   Plus,
   Trash2,
@@ -153,15 +154,14 @@ const OfficerForm = ({ data, onChange, roleLabel }) => (
         />
       </div>
     </div>
-    <div className="admin-form-group">
-      <label>Profile Photo URL</label>
-      <input
-        type="text"
-        className="admin-form-control"
-        placeholder="https://... or images/photo.jpg"
-        value={data.photo || ''}
-        onChange={(e) => onChange({ ...data, photo: e.target.value })}
-      />
+    <ImageUploadField
+      id={`ward-officer-photo-${roleLabel.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`}
+      label="Profile Photo"
+      value={data.photo}
+      onChange={(photo) => onChange({ ...data, photo })}
+      placeholder="Paste an image URL or upload a file"
+    />
+    <div>
       {data.photo && (
         <img
           src={data.photo}
@@ -694,20 +694,14 @@ const AdminWardsSection = () => {
                         <input type="text" className="admin-form-control" placeholder="+91 98450 12345" value={modalData.gurkarPhone} onChange={(e) => setModalData({ ...modalData, gurkarPhone: e.target.value })} />
                       </div>
                     </div>
-                    <div className="admin-form-group">
-                      <label>Main Banner Image URL</label>
-                      <input type="text" className="admin-form-control" placeholder="e.g. images/gallery-2.jpg or image URL" value={modalData.image} onChange={(e) => setModalData({ ...modalData, image: e.target.value })} />
-                    </div>
+                    <ImageUploadField id="ward-banner-image" label="Main Banner Image" value={modalData.image} onChange={(image) => setModalData({ ...modalData, image })} placeholder="Paste an image URL or upload a file" />
                   </>
                 )}
 
                 {/* ── ADD WARD IMAGE ────────────────────────────────────────── */}
                 {modalType === 'addWardImage' && (
                   <>
-                    <div className="admin-form-group">
-                      <label>Image Source / URL *</label>
-                      <input type="text" className="admin-form-control" placeholder="e.g. images/gallery-2.jpg or image URL" value={modalData.src} onChange={(e) => setModalData({ ...modalData, src: e.target.value })} required />
-                    </div>
+                    <ImageUploadField id="ward-gallery-image" label="Image *" value={modalData.src} onChange={(src) => setModalData({ ...modalData, src })} placeholder="Paste an image URL or upload a file" required />
                     <div className="admin-form-group">
                       <label>Photo Title / Caption *</label>
                       <input type="text" className="admin-form-control" placeholder="e.g. Ward Feast Thanksgiving Mass" value={modalData.caption} onChange={(e) => setModalData({ ...modalData, caption: e.target.value })} required />

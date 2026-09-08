@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
+import ImageUploadField from '../../components/common/ImageUploadField';
 import {
   Plus,
   Trash2,
@@ -803,16 +804,7 @@ const AdminOrganizationsSection = ({ initialSelectedOrgSlug = null }) => {
                       </div>
                     </div>
 
-                    <div className="admin-form-group">
-                      <label>Cover Photo URL</label>
-                      <input
-                        type="text"
-                        className="admin-form-control"
-                        placeholder="images/hero-community.jpg"
-                        value={modalData.image}
-                        onChange={(e) => setModalData({ ...modalData, image: e.target.value })}
-                      />
-                    </div>
+                    <ImageUploadField id="organization-cover-image" label="Cover Photo" value={modalData.image} onChange={(image) => setModalData({ ...modalData, image })} placeholder="Paste an image URL or upload a file" />
                   </>
                 )}
 
@@ -877,6 +869,7 @@ const AdminOrganizationsSection = ({ initialSelectedOrgSlug = null }) => {
                         />
                       </div>
                     </div>
+                    <ImageUploadField id="organization-bearer-photo" label="Leader Photo" value={modalData.photo} onChange={(photo) => setModalData({ ...modalData, photo })} placeholder="Paste an image URL or upload a file" />
                   </>
                 )}
 

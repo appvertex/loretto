@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
+import ImageUploadField from '../../components/common/ImageUploadField';
 import { UserCheck, Sparkles, CheckCircle2, RefreshCw } from 'lucide-react';
 
 const AdminPriestSection = () => {
@@ -100,21 +101,7 @@ const AdminPriestSection = () => {
             />
           </div>
 
-          <div className="admin-form-group">
-            <label htmlFor="image">Portrait Image URL</label>
-            <input
-              type="text"
-              id="image"
-              name="image"
-              className="admin-form-control"
-              placeholder="e.g. images/priest-portrait.jpg or full image URL"
-              value={formData.image}
-              onChange={handleChange}
-            />
-            <small style={{ color: 'var(--brown-muted)', display: 'block', marginTop: '0.3rem' }}>
-              Leave relative path or paste full image URL.
-            </small>
-          </div>
+          <ImageUploadField id="priest-portrait-image" label="Portrait Image" value={formData.image} onChange={(image) => setFormData({ ...formData, image })} placeholder="Paste an image URL or upload a file" helpText="You can also paste a relative path or full image URL." />
 
           <button type="submit" className="admin-btn admin-btn--primary" style={{ marginTop: '1rem' }}>
             <UserCheck size={16} /> Save Priest Name & Sync Everywhere

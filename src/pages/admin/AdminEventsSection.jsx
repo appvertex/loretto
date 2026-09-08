@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
 import { eventCategories as initialCategories } from '../../data/events';
+import ImageUploadField from '../../components/common/ImageUploadField';
 import {
   Plus,
   Trash2,
@@ -410,15 +411,7 @@ const AdminEventsSection = () => {
                 </div>
 
                 <div className="admin-form-group">
-                  <label>Cover Photo Image URL *</label>
-                  <input
-                    type="text"
-                    className="admin-form-control"
-                    placeholder="e.g. images/hero-community.jpg or image URL"
-                    value={modalData.image}
-                    onChange={(e) => setModalData({ ...modalData, image: e.target.value })}
-                    required
-                  />
+                  <ImageUploadField id="event-cover-image" label="Cover Photo Image *" value={modalData.image} onChange={(image) => setModalData({ ...modalData, image })} placeholder="Paste an image URL or upload a file" required />
                   <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--brown-muted)', width: '100%' }}>Quick Photo Presets:</span>
                     {presetImages.map((preset) => (

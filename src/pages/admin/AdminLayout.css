@@ -556,6 +556,52 @@
   pointer-events: none;
 }
 
+.admin-image-upload-field__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.admin-image-upload-field {
+  margin-bottom: 1.25rem;
+}
+
+.admin-image-upload-field > label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brown-primary);
+}
+
+.admin-image-upload-field__button {
+  white-space: nowrap;
+}
+
+.admin-image-upload-field__help,
+.admin-image-upload-field__error {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+  color: var(--brown-muted);
+}
+
+.admin-image-upload-field__error {
+  color: #b02a37;
+}
+
+@media (max-width: 640px) {
+  .admin-image-upload-field__controls {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-image-upload-field__button {
+    justify-content: center;
+  }
+}
+
 .admin-icon-btn {
   width: 2.25rem;
   height: 2.25rem;

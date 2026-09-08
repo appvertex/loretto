@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
 import { newsCategories as initialCategories } from '../../data/news';
+import ImageUploadField from '../../components/common/ImageUploadField';
 import {
   Plus,
   Trash2,
@@ -338,17 +339,7 @@ const AdminNewsSection = () => {
                   </label>
                 </div>
 
-                <div className="admin-form-group">
-                  <label>Cover Photo Image URL *</label>
-                  <input
-                    type="text"
-                    className="admin-form-control"
-                    placeholder="e.g. images/hero-community.jpg or image URL"
-                    value={modalData.image}
-                    onChange={(e) => setModalData({ ...modalData, image: e.target.value })}
-                    required
-                  />
-                </div>
+                <ImageUploadField id="news-cover-image" label="Cover Photo Image *" value={modalData.image} onChange={(image) => setModalData({ ...modalData, image })} placeholder="Paste an image URL or upload a file" required />
 
                 <div className="admin-form-group">
                   <label>Short Excerpt / Summary *</label>
