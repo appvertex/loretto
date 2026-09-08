@@ -35,7 +35,6 @@ export const NewsArticlePage = () => {
   const articles = news?.length ? news : fallbackNews;
   const article = articles.find((item) => item.slug === slug);
   const articleUrl = article ? `${window.location.origin}/news/${article.slug}` : '';
-  const shareUrl = article ? `${window.location.origin}/api/share/news/${article.slug}` : '';
 
   useEffect(() => {
     if (!article) return undefined;
@@ -93,13 +92,13 @@ export const NewsArticlePage = () => {
     if (navigator.share) {
       await navigator.share({
         title: article.title,
-        text: article.excerpt ? `${article.excerpt}\n${articleUrl}` : articleUrl,
-        url: shareUrl,
+        text: article.excerpt || article.title,
+        url: articleUrl,
       });
       return;
     }
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      await navigator.clipboard.writeText(articleUrl);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2500);
     } catch {

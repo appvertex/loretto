@@ -260,6 +260,22 @@ export default {
 
     try {
       if (!isApiRequest && env.ASSETS) {
+        const newsMatch = pathname.match(/^\/news\/([^/]+)$/);
+
+        // Return article metadata for crawlers before the SPA fallback. Social
+        // crawlers often send Accept: */* instead of Accept: text/html.
+        if (newsMatch && request.method === 'GET') {
+          const metadata = await getNewsMetadata(env.DB, decodeURIComponent(newsMatch[1]));
+          const shell = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+          if (metadata && shell.ok) {
+            const html = injectNewsMetadata(await shell.text(), metadata, request.url);
+            return new Response(html, {
+              status: 200,
+              headers: new Headers(shell.headers),
+            });
+          }
+        }
+
         let assetResponse = await env.ASSETS.fetch(request);
         const acceptsHtml = request.headers.get('Accept')?.includes('text/html');
         const pathnameHasFileExtension = pathname.includes('.');
@@ -269,7 +285,6 @@ export default {
           assetResponse = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
         }
 
-        const newsMatch = pathname.match(/^\/news\/([^/]+)$/);
         if (assetResponse.ok && request.method === 'GET' && acceptsHtml && newsMatch) {
           const metadata = await getNewsMetadata(env.DB, decodeURIComponent(newsMatch[1]));
           if (metadata) {
