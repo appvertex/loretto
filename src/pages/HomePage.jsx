@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Calendar, ArrowRight, Bell, ChevronRight, FileText, Sparkles } from 'lucide-react';
+import { Calendar, ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
 
 import HeroSlider from '../components/home/HeroSlider';
 import WelcomeSection from '../components/home/WelcomeSection';
@@ -15,13 +15,6 @@ import { news } from '../data/news';
 import { useParishData } from '../context/ParishContext';
 
 import './HomePage.css';
-
-/* Quick notice bulletin items */
-const quickNotices = [
-  { id: 1, title: 'Catechism Classes Begin for New Academic Year', date: 'Aug 10', tag: 'Catechism' },
-  { id: 2, title: 'Youth Group Blood Donation Drive Success', date: 'Aug 05', tag: 'Youth' },
-  { id: 3, title: 'Parish Council Meeting & Pastoral Planning', date: 'Aug 18', tag: 'Notice' },
-];
 
 /* ================================================================
    HOME PAGE — Clean, Spacious & Focused Layout
@@ -156,44 +149,6 @@ const HomePage = () => {
               ))}
             </div>
 
-            {/* Right Column: Quick Notices & Parish Bulletin Board */}
-            <motion.aside
-              className="bento-card bento-card--bulletin"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <div className="bento-bulletin__header">
-                <div className="bento-bulletin__icon">
-                  <Bell size={18} aria-hidden="true" />
-                </div>
-                <div>
-                  <h3 className="bento-bulletin__heading">Parish Notices</h3>
-                  <span className="bento-bulletin__subheading">Quick Community Updates</span>
-                </div>
-              </div>
-
-              <ul className="bento-bulletin__list">
-                {quickNotices.map((notice) => (
-                  <li key={notice.id} className="bento-bulletin__item">
-                    <div className="bento-bulletin__item-top">
-                      <span className="bento-bulletin__tag">{notice.tag}</span>
-                      <span className="bento-bulletin__date">{notice.date}</span>
-                    </div>
-                    <p className="bento-bulletin__item-text">{notice.title}</p>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="bento-bulletin__footer">
-                <Link to="/news" className="bento-bulletin__cta">
-                  <FileText size={15} aria-hidden="true" />
-                  <span>View All Notices & News</span>
-                  <ArrowRight size={14} aria-hidden="true" />
-                </Link>
-              </div>
-            </motion.aside>
           </div>
         </div>
       </section>
