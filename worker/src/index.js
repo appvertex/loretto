@@ -319,12 +319,25 @@ export default {
       }
 
       if (pathname.startsWith('/api/share/news/') && request.method === 'GET') {
-        const slug = decodeURIComponent(pathname.replace('/api/share/news/', ''));
+        const sharePath = pathname.replace('/api/share/news/', '');
+        const isImageRequest = sharePath.endsWith('/image');
+        const slug = decodeURIComponent(isImageRequest ? sharePath.slice(0, -('/image'.length)) : sharePath);
         const metadata = await getNewsMetadata(env.DB, slug);
         if (!metadata) return new Response('News article not found', { status: 404 });
 
+        if (isImageRequest) {
+          const sourceImage = await fetch(new URL(metadata.image, request.url).href);
+          if (!sourceImage.ok) return new Response('News image not found', { status: 404 });
+          const imageHeaders = new Headers(sourceImage.headers);
+          imageHeaders.set('Cache-Control', 'public, max-age=86400, immutable');
+          return new Response(sourceImage.body, {
+            status: sourceImage.status,
+            headers: imageHeaders,
+          });
+        }
+
         const articleUrl = new URL(`/news/${encodeURIComponent(slug)}`, request.url).href;
-        const imageUrl = new URL(metadata.image, request.url).href;
+        const imageUrl = new URL(`/api/share/news/${encodeURIComponent(slug)}/image`, request.url).href;
         const title = `${metadata.title} | Our Lady of Loretto Church`;
         const description = metadata.description || 'Parish news from Our Lady of Loretto Church.';
         const html = `<!doctype html>
