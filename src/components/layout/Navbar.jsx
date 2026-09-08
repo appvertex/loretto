@@ -160,11 +160,11 @@ const Navbar = () => {
       <div className="navbar__menu-row">
         <div className="navbar__desktop-container">
           {/* Brand Logo & Title on Far Left */}
-          <Link to="/" className="navbar__brand" aria-label="Our Lady of Loretto Church Home">
+          <Link to="/" className="navbar__brand" aria-label="Our Lady of Loretto Church, Bantwal Home">
             <img src={logoUrl} alt="Loretto Church Logo" className="navbar__brand-logo" />
             <div className="navbar__brand-text">
-              <span className="navbar__brand-title">OUR LADY OF LORETTO</span>
-              <span className="navbar__brand-sub">CHURCH, BANTWAL</span>
+              <span className="navbar__brand-title">OUR LADY OF LORETTO CHURCH</span>
+              <span className="navbar__brand-sub">BANTWAL</span>
             </div>
           </Link>
 
