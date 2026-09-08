@@ -55,6 +55,14 @@ const escapeHtml = (value = '') => String(value)
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#39;');
 
+function getShareImageUrl(image, requestUrl) {
+  const imageUrl = new URL(image, requestUrl).href;
+  return imageUrl.replace(
+    '/image/upload/',
+    '/image/upload/w_1200,h_630,c_fill,q_auto:good,f_jpg/'
+  );
+}
+
 async function getNewsMetadata(db, slug) {
   const fallback = fallbackNewsMetadata[slug];
   try {
@@ -339,8 +347,9 @@ export default {
           });
         }
 
+        const shareUrl = new URL(request.url).href;
         const articleUrl = new URL(`/news/${encodeURIComponent(slug)}`, request.url).href;
-        const imageUrl = new URL(`/api/share/news/${encodeURIComponent(slug)}/image`, request.url).href;
+        const imageUrl = getShareImageUrl(metadata.image, request.url);
         const title = `${metadata.title} | Our Lady of Loretto Church`;
         const description = metadata.description || 'Parish news from Our Lady of Loretto Church.';
         const html = `<!doctype html>
@@ -350,15 +359,16 @@ export default {
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}">
     <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Our Lady of Loretto Church">
     <meta property="og:title" content="${escapeHtml(title)}">
     <meta property="og:description" content="${escapeHtml(description)}">
     <meta property="og:image" content="${escapeHtml(imageUrl)}">
     <meta property="og:image:secure_url" content="${escapeHtml(imageUrl)}">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="${escapeHtml(metadata.title)}">
-    <meta property="og:url" content="${escapeHtml(articleUrl)}">
+    <meta property="og:url" content="${escapeHtml(shareUrl)}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(title)}">
     <meta name="twitter:description" content="${escapeHtml(description)}">
