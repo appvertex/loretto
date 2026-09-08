@@ -93,8 +93,8 @@ export const NewsArticlePage = () => {
     if (navigator.share) {
       await navigator.share({
         title: article.title,
-        text: article.excerpt || article.title,
-        url: shareUrl,
+        // Put the preview URL in the text so WhatsApp Status detects it like a pasted link.
+        text: `${article.title}\n${shareUrl}`,
       });
       return;
     }
