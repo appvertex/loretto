@@ -20,7 +20,6 @@ import AdminSiteSettingsSection from './AdminSiteSettingsSection';
 import {
   UserCheck,
   MessageSquareText,
-  History,
   BookOpen,
   Users,
   Building2,
@@ -61,6 +60,13 @@ const mediaSubItems = [
   { id: 'obituary', label: 'Obituaries (ಮರಣಾಂ)', icon: <Flame size={16} /> },
 ];
 
+const aboutSubItems = [
+  { id: 'aboutParish', label: 'Our Parish' },
+  { id: 'aboutHistory', label: 'Church History' },
+  { id: 'aboutPatroness', label: 'Our Patroness' },
+  { id: 'aboutDiocese', label: 'Diocese' },
+];
+
 const navItems = [
   { id: 'siteSettings', label: 'Site Settings', icon: <Settings size={18} /> },
   {
@@ -86,10 +92,15 @@ const navItems = [
     isDropdown: true,
     dropdownType: 'organizations',
   },
+  {
+    id: 'aboutPages',
+    label: 'About Pages',
+    icon: <BookOpen size={18} />,
+    isDropdown: true,
+    dropdownType: 'about',
+  },
   { id: 'institutions', label: 'Parish Institutions (ಸಂಸ್ಥಾವೊ)', icon: <Building2 size={18} /> },
   { id: 'wards', label: 'Parish Wards (ವಾಡೆ)', icon: <HomeIcon size={18} /> },
-  { id: 'history', label: 'Church History', icon: <History size={18} /> },
-  { id: 'about', label: 'About Pages', icon: <BookOpen size={18} /> },
 ];
 
 const AdminDashboard = () => {
@@ -99,6 +110,7 @@ const AdminDashboard = () => {
   const [isParishDropdownOpen, setIsParishDropdownOpen] = useState(true);
   const [isMediaDropdownOpen, setIsMediaDropdownOpen] = useState(true);
   const [isOrgsDropdownOpen, setIsOrgsDropdownOpen] = useState(true);
+  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [showPasscodeModal, setShowPasscodeModal] = useState(false);
   const [currentPasscode, setCurrentPasscode] = useState('');
@@ -120,6 +132,8 @@ const AdminDashboard = () => {
     if (pSub) return pSub.label;
     const mSub = mediaSubItems.find(sub => sub.id === activeTab);
     if (mSub) return mSub.label;
+    const aSub = aboutSubItems.find(sub => sub.id === activeTab);
+    if (aSub) return aSub.label;
     const item = navItems.find(n => n.id === activeTab);
     return item ? item.label : 'Admin Dashboard';
   };
@@ -196,6 +210,7 @@ const AdminDashboard = () => {
         setIsParishDropdownOpen(false);
         setIsMediaDropdownOpen(false);
         setIsOrgsDropdownOpen(false);
+        setIsAboutDropdownOpen(false);
       }
 
       return willOpen;
@@ -295,6 +310,42 @@ const AdminDashboard = () => {
                     {isMediaDropdownOpen && (
                       <ul className="admin-sidebar__dropdown-menu">
                         {mediaSubItems.map((sub) => (
+                          <li key={sub.id}>
+                            <button
+                              className={`admin-sidebar__dropdown-btn ${activeTab === sub.id ? 'active' : ''}`}
+                              onClick={() => {
+                                setActiveTab(sub.id);
+                                setIsMobileSidebarOpen(false);
+                              }}
+                            >
+                              <span>{sub.label}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              }
+
+              if (item.dropdownType === 'about') {
+                const isAboutActive = aboutSubItems.some(sub => sub.id === activeTab);
+                return (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      className={`admin-sidebar__item-btn ${isAboutActive ? 'active' : ''}`}
+                      aria-expanded={isAboutDropdownOpen}
+                      onClick={(event) => toggleSidebarDropdown(event, setIsAboutDropdownOpen)}
+                    >
+                      {item.icon}
+                      <span style={{ flex: 1 }}>{item.label}</span>
+                      {isAboutDropdownOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    </button>
+
+                    {isAboutDropdownOpen && (
+                      <ul className="admin-sidebar__dropdown-menu">
+                        {aboutSubItems.map((sub) => (
                           <li key={sub.id}>
                             <button
                               className={`admin-sidebar__dropdown-btn ${activeTab === sub.id ? 'active' : ''}`}
@@ -453,7 +504,15 @@ const AdminDashboard = () => {
           {activeTab === 'events' && <AdminEventsSection />}
           {activeTab === 'news' && <AdminNewsSection />}
           {activeTab === 'history' && <AdminHistorySection />}
-          {activeTab === 'about' && <AdminAboutSection />}
+          {activeTab === 'aboutParish' && <AdminAboutSection page="parish" />}
+          {activeTab === 'aboutHistory' && (
+            <>
+              <AdminAboutSection page="history" />
+              <AdminHistorySection />
+            </>
+          )}
+          {activeTab === 'aboutPatroness' && <AdminAboutSection page="patroness" />}
+          {activeTab === 'aboutDiocese' && <AdminAboutSection page="diocese" />}
           {activeTab === 'council' && <AdminCouncilSection />}
           {activeTab === 'organizations' && (
             <AdminOrganizationsSection
