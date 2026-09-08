@@ -84,6 +84,7 @@ const AppContent = () => {
         <Route path="/contact" element={<ContactPage />} />
 
         {/* Admin */}
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/*" element={<AdminDashboard />} />
 
         {/* 404 */}

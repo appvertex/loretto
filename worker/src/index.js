@@ -261,6 +261,7 @@ export default {
     try {
       if (!isApiRequest && env.ASSETS) {
         const newsMatch = pathname.match(/^\/news\/([^/]+)$/);
+        const isAdminRoute = pathname === '/admin' || pathname.startsWith('/admin/');
 
         // Return article metadata for crawlers before the SPA fallback. Social
         // crawlers often send Accept: */* instead of Accept: text/html.
@@ -270,6 +271,18 @@ export default {
           if (metadata && shell.ok) {
             const html = injectNewsMetadata(await shell.text(), metadata, request.url);
             return new Response(html, {
+              status: 200,
+              headers: new Headers(shell.headers),
+            });
+          }
+        }
+
+        // Admin is also a client-side route; always return the SPA shell with
+        // a successful status so direct navigation and hard refresh work.
+        if (isAdminRoute && request.method === 'GET') {
+          const shell = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+          if (shell.ok) {
+            return new Response(shell.body, {
               status: 200,
               headers: new Headers(shell.headers),
             });
