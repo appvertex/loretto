@@ -36,6 +36,7 @@ const CONTENT_KEYS = new Set([
   'obituaries',
   'institutions',
   'siteSettings',
+  'aboutContent',
 ]);
 
 function bytesToHex(buffer) {
