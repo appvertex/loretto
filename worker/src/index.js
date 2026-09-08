@@ -416,7 +416,17 @@ export default {
       }
 
       if (env.ASSETS) {
-        return env.ASSETS.fetch(request);
+        const assetResponse = await env.ASSETS.fetch(request);
+        const acceptsHtml = request.headers.get('Accept')?.includes('text/html');
+        const pathnameHasFileExtension = new URL(request.url).pathname.includes('.');
+
+        // Cloudflare Workers do not always apply Pages' _redirects before this
+        // handler, so explicitly serve the SPA shell for client-side routes.
+        if (assetResponse.status === 404 && request.method === 'GET' && acceptsHtml && !pathnameHasFileExtension) {
+          return env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+        }
+
+        return assetResponse;
       }
 
       // Default 404 Route
