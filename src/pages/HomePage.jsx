@@ -12,6 +12,7 @@ import MassTimesStrip from '../components/home/MassTimesStrip';
 import LocationSection from '../components/home/LocationSection';
 
 import { news } from '../data/news';
+import { useParishData } from '../context/ParishContext';
 
 import './HomePage.css';
 
@@ -36,8 +37,13 @@ const quickNotices = [
    9. Our Location (Map & Parish Address)
 ================================================================ */
 const HomePage = () => {
-  const featured = news.find((n) => n.featured) || news[0];
-  const sideNews = news.filter((n) => n.id !== featured.id).slice(0, 2);
+  const { news: parishNews } = useParishData();
+  const activeNews = parishNews?.length ? parishNews : news;
+  const latestNews = [...activeNews]
+    .sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime())
+    .slice(0, 3);
+  const featured = latestNews.find((item) => item.featured) || latestNews[0];
+  const sideNews = latestNews.filter((item) => item.id !== featured?.id);
 
   return (
     <main id="main-content">
