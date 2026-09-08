@@ -10,6 +10,7 @@ import { newsletters as initialNewsletters } from '../data/newsletter';
 import { obituaries as initialObituaries } from '../data/obituaries';
 import { initialInstitutions } from '../data/institutions';
 import { initialSiteSettings } from '../data/siteSettings';
+import { initialAboutContent } from '../data/about';
 import { api } from '../api/client';
 
 const ParishContext = createContext(null);
@@ -28,6 +29,7 @@ const STORAGE_KEYS = {
   OBITUARIES: 'loretto_parish_obituaries',
   INSTITUTIONS: 'loretto_parish_institutions',
   SITE_SETTINGS: 'loretto_site_settings',
+  ABOUT: 'loretto_about_content',
   AUTH: 'loretto_admin_auth',
 };
 
@@ -45,6 +47,7 @@ const CONTENT_KEYS = {
   OBITUARIES: 'obituaries',
   INSTITUTIONS: 'institutions',
   SITE_SETTINGS: 'siteSettings',
+  ABOUT: 'aboutContent',
 };
 
 const initialOfficeData = {
@@ -65,6 +68,14 @@ const getInitialParishFacts = () => initialFacts.map(fact => {
   }
   return fact;
 });
+
+const mergeAboutContent = (content = {}) => Object.keys(initialAboutContent).reduce((merged, page) => ({
+  ...merged,
+  [page]: {
+    ...initialAboutContent[page],
+    ...(content[page] || {}),
+  },
+}), {});
 
 export const ParishProvider = ({ children }) => {
   // 1. Leadership State
@@ -198,7 +209,17 @@ export const ParishProvider = ({ children }) => {
     }
   });
 
-  // 14. Admin Authentication State
+  // 14. About page content
+  const [aboutContent, setAboutContent] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.ABOUT);
+      return saved ? mergeAboutContent(JSON.parse(saved)) : initialAboutContent;
+    } catch {
+      return initialAboutContent;
+    }
+  });
+
+  // 15. Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
     try {
       return sessionStorage.getItem(STORAGE_KEYS.AUTH) === 'true' && api.hasAdminSession();
@@ -245,6 +266,9 @@ export const ParishProvider = ({ children }) => {
       if (Object.hasOwn(content, CONTENT_KEYS.INSTITUTIONS)) setInstitutions(content[CONTENT_KEYS.INSTITUTIONS]);
       if (Object.hasOwn(content, CONTENT_KEYS.SITE_SETTINGS)) {
         setSiteSettings({ ...initialSiteSettings, ...content[CONTENT_KEYS.SITE_SETTINGS] });
+      }
+      if (Object.hasOwn(content, CONTENT_KEYS.ABOUT)) {
+        setAboutContent(mergeAboutContent(content[CONTENT_KEYS.ABOUT]));
       }
     }).catch((err) => {
       console.warn('[Loretto API] Failed to load shared D1 content. Using local content.', err);
@@ -310,6 +334,10 @@ export const ParishProvider = ({ children }) => {
     saveLocalAndRemote(STORAGE_KEYS.SITE_SETTINGS, CONTENT_KEYS.SITE_SETTINGS, siteSettings);
   }, [siteSettings, saveLocalAndRemote]);
 
+  useEffect(() => {
+    saveLocalAndRemote(STORAGE_KEYS.ABOUT, CONTENT_KEYS.ABOUT, aboutContent);
+  }, [aboutContent, saveLocalAndRemote]);
+
   // Auth helper methods
   const loginAdmin = async (passcode) => {
     const isValid = await api.verifyAdminPasscode(passcode);
@@ -346,6 +374,7 @@ export const ParishProvider = ({ children }) => {
       [CONTENT_KEYS.OBITUARIES, obituaries],
       [CONTENT_KEYS.INSTITUTIONS, institutions],
       [CONTENT_KEYS.SITE_SETTINGS, siteSettings],
+      [CONTENT_KEYS.ABOUT, aboutContent],
     ];
 
     const results = await Promise.all(
@@ -979,6 +1008,10 @@ export const ParishProvider = ({ children }) => {
     setSiteSettings(prev => ({ ...prev, ...updatedSettings }));
   };
 
+  const updateAboutContent = (updatedContent) => {
+    setAboutContent(prev => mergeAboutContent({ ...prev, ...updatedContent }));
+  };
+
   // Helper 16: Reset All Data to Defaults
   const resetToDefaults = () => {
     setLeadership(initialLeadership);
@@ -994,6 +1027,7 @@ export const ParishProvider = ({ children }) => {
     setObituaries(initialObituaries);
     setInstitutions(initialInstitutions);
     setSiteSettings(initialSiteSettings);
+    setAboutContent(initialAboutContent);
 
     localStorage.removeItem(STORAGE_KEYS.LEADERSHIP);
     localStorage.removeItem(STORAGE_KEYS.HISTORY_TIMELINE);
@@ -1008,6 +1042,7 @@ export const ParishProvider = ({ children }) => {
     localStorage.removeItem(STORAGE_KEYS.OBITUARIES);
     localStorage.removeItem(STORAGE_KEYS.INSTITUTIONS);
     localStorage.removeItem(STORAGE_KEYS.SITE_SETTINGS);
+    localStorage.removeItem(STORAGE_KEYS.ABOUT);
   };
 
   return (
@@ -1030,6 +1065,7 @@ export const ParishProvider = ({ children }) => {
         obituaries,
         institutions,
         siteSettings,
+        aboutContent,
         isAdminAuthenticated,
         loginAdmin,
         logoutAdmin,
@@ -1082,6 +1118,7 @@ export const ParishProvider = ({ children }) => {
         updateInstitution,
         deleteInstitution,
         updateSiteSettings,
+        updateAboutContent,
         resetToDefaults,
       }}
     >

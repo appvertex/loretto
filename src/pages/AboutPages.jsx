@@ -4,15 +4,18 @@ import { motion } from 'framer-motion';
 import { Landmark, Shield } from 'lucide-react';
 import { useParishData } from '../context/ParishContext';
 
+const replaceChurchName = (text, churchName) => (text || '').replaceAll('{churchName}', churchName);
+
 export const OurParishPage = () => {
-  const { parishFacts, siteSettings } = useParishData();
+  const { parishFacts, siteSettings, aboutContent } = useParishData();
   const churchName = siteSettings.churchName || 'Our Lady of Loretto Church';
+  const content = aboutContent.parish;
 
   return (
     <main className="inner-page">
       <section className="page-hero">
         <div className="page-hero__content container">
-          <h1 className="page-hero__title">Our Parish</h1>
+          <h1 className="page-hero__title">{content.heroTitle}</h1>
           <div className="page-hero__breadcrumb">
             <Link to="/">Home</Link> <span>/</span> <span>About</span> <span>/</span> <span>Our Parish</span>
           </div>
@@ -21,24 +24,24 @@ export const OurParishPage = () => {
 
       <section className="section section--white">
         <div className="container" style={{ maxWidth: '900px' }}>
-          <h2 className="section-heading__title" style={{ marginBottom: '1.5rem' }}>Welcome to {churchName} Parish</h2>
+          <h2 className="section-heading__title" style={{ marginBottom: '1.5rem' }}>{replaceChurchName(content.contentHeading, churchName)}</h2>
 
           {/* Church exterior photo */}
           <div style={{ position: 'relative', marginBottom: '2.5rem', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-strong)', border: '2px solid var(--gold-antique)' }}>
             <img
-              src={`${import.meta.env.BASE_URL}images/church-exterior.jpg`}
+              src={content.image}
                 alt={`${churchName}, Loretto, Mangalore`}
               style={{ width: '100%', height: '420px', objectFit: 'cover', display: 'block' }}
             />
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(53,21,27,0.75) 0%, transparent 100%)', padding: '1.25rem 1.5rem' }}>
               <p style={{ color: 'var(--gold-light)', fontFamily: 'var(--font-serif)', fontSize: '1.1rem', margin: 0, letterSpacing: '0.03em' }}>
-                {churchName} — Loretto, Mangalore
+                {replaceChurchName(content.imageCaption, churchName)}
               </p>
             </div>
           </div>
 
           <p style={{ fontSize: '1.05rem', lineHeight: '1.8', marginBottom: '1.25rem' }}>
-            {churchName}, situated in Loretto, Mangalore, is a sacred home of faith, hope and Christian service. Our parish community is dedicated to worshipping God, growing in communion, and spreading Christ's love across the region.
+            {replaceChurchName(content.introduction, churchName)}
           </p>
 
           <div className="grid-2" style={{ margin: '2.5rem 0' }}>
@@ -50,9 +53,9 @@ export const OurParishPage = () => {
             ))}
           </div>
 
-          <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', color: 'var(--brown-primary)', marginBottom: '1rem' }}>Our Parish Mission</h3>
+          <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', color: 'var(--brown-primary)', marginBottom: '1rem' }}>{content.missionHeading}</h3>
           <p style={{ lineHeight: '1.8' }}>
-            To build a vibrant, prayerful Catholic community rooted in the Word of God and the Eucharist, actively engaged in pastoral care, catechism, youth formation, and charitable outreach under the patronage of Our Lady of Loretto.
+            {replaceChurchName(content.mission, churchName)}
           </p>
         </div>
       </section>
@@ -61,13 +64,14 @@ export const OurParishPage = () => {
 };
 
 export const HistoryPage = () => {
-  const { historyTimeline } = useParishData();
+  const { historyTimeline, aboutContent } = useParishData();
+  const content = aboutContent.history;
 
   return (
     <main className="inner-page">
       <section className="page-hero">
         <div className="page-hero__content container">
-          <h1 className="page-hero__title">Church History</h1>
+          <h1 className="page-hero__title">{content.heroTitle}</h1>
           <div className="page-hero__breadcrumb">
             <Link to="/">Home</Link> <span>/</span> <span>About</span> <span>/</span> <span>History</span>
           </div>
@@ -77,15 +81,15 @@ export const HistoryPage = () => {
       <section className="section section--cream">
         <div className="container">
           <div className="section-heading">
-            <h2 className="section-heading__title">Historical Milestones</h2>
-            <p className="section-heading__subtitle">Journey through the rich foundation and growth of Our Lady of Loretto Parish</p>
+            <h2 className="section-heading__title">{content.sectionHeading}</h2>
+            <p className="section-heading__subtitle">{content.sectionSubtitle}</p>
           </div>
 
           {/* Church exterior photo banner */}
           <div style={{ maxWidth: '850px', margin: '0 auto 2.5rem', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-strong)', border: '2px solid var(--border-gold)' }}>
             <img
-              src={`${import.meta.env.BASE_URL}images/church-exterior.jpg`}
-              alt="Our Lady of Loretto Church — historical landmark"
+              src={content.image}
+              alt={content.imageAlt}
               style={{ width: '100%', height: '320px', objectFit: 'cover', display: 'block' }}
             />
           </div>
@@ -128,11 +132,15 @@ export const HistoryPage = () => {
   );
 };
 
-export const PatronessPage = () => (
+export const PatronessPage = () => {
+  const { aboutContent } = useParishData();
+  const content = aboutContent.patroness;
+
+  return (
   <main className="inner-page">
     <section className="page-hero">
       <div className="page-hero__content container">
-        <h1 className="page-hero__title">Our Lady of Loretto</h1>
+          <h1 className="page-hero__title">{content.heroTitle}</h1>
         <div className="page-hero__breadcrumb">
           <Link to="/">Home</Link> <span>/</span> <span>About</span> <span>/</span> <span>Our Patroness</span>
         </div>
@@ -143,11 +151,11 @@ export const PatronessPage = () => (
       <div className="container" style={{ maxWidth: '900px' }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <img
-            src={`${import.meta.env.BASE_URL}images/patroness-mary.jpg`}
-            alt="Our Lady of Loretto"
+            src={content.image}
+            alt={content.imageAlt}
             style={{ width: '260px', height: '360px', objectFit: 'cover', borderRadius: 'var(--radius-md)', margin: '0 auto 1.5rem', border: '2px solid var(--gold-antique)', boxShadow: 'var(--shadow-strong)' }}
           />
-          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.4rem', color: 'var(--gold-antique)' }}>"Our Lady of Loretto, Pray For Us"</h2>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.4rem', color: 'var(--gold-antique)' }}>&quot;{content.devotionalTitle}&quot;</h2>
           {/* Feast Day Badge */}
           <div style={{
             display: 'inline-flex',
@@ -178,10 +186,10 @@ export const PatronessPage = () => (
               <span style={{ position: 'absolute', bottom: '6px', right: '8px', width: '8px', height: '8px', borderBottom: '1.5px solid var(--gold-antique)', borderRight: '1.5px solid var(--gold-antique)', borderRadius: '0 0 2px 0', opacity: 0.7 }} />
 
               <p style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.22em', color: 'var(--gold-antique)', margin: '0 0 0.4rem', fontFamily: 'var(--font-sans)' }}>
-                Annual Feast Day
+                {content.feastLabel}
               </p>
               <p style={{ fontFamily: 'var(--font-serif)', fontSize: '1.7rem', fontWeight: 600, color: 'var(--brown-primary)', margin: 0, letterSpacing: '0.02em', lineHeight: 1.1 }}>
-                December 10
+                {content.feastDate}
               </p>
             </div>
 
@@ -194,30 +202,35 @@ export const PatronessPage = () => (
           </div>
         </div>
 
-        <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', color: 'var(--brown-primary)', marginBottom: '1rem' }}>The Significance of Our Lady of Loretto</h3>
+        <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', color: 'var(--brown-primary)', marginBottom: '1rem' }}>{content.significanceHeading}</h3>
         <p style={{ lineHeight: '1.8', marginBottom: '1.25rem' }}>
-          The title <em>Our Lady of Loretto</em> refers to the Holy House of Loreto, the sacred dwelling in Nazareth where the Virgin Mary was born, received the Annunciation from the Angel Gabriel, and raised Jesus Christ with St. Joseph.
+          {content.significanceParagraphOne}
         </p>
         <p style={{ lineHeight: '1.8', marginBottom: '1.25rem' }}>
-          Our parish in Loretto, Mangalore invokes Mother Mary under this cherished Marian title, seeking her guidance, peace, and maternal intercession for all families in our community.
+          {content.significanceParagraphTwo}
         </p>
 
         <div style={{ background: 'var(--cream)', border: '1px solid var(--border-gold)', padding: '2rem', borderRadius: 'var(--radius-md)', marginTop: '2rem' }}>
-          <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', color: 'var(--brown-primary)', marginBottom: '0.5rem' }}>Prayer to Our Lady of Loretto</h4>
+          <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', color: 'var(--brown-primary)', marginBottom: '0.5rem' }}>{content.prayerHeading}</h4>
           <p style={{ fontStyle: 'italic', lineHeight: '1.8', color: 'var(--brown-primary)' }}>
-            "O Holy Mother of God, Queen of Heaven and Patroness of Our Parish, look with love upon your children gathered under your mantle. Intercede for our families, protect our youth, comfort the sick, and guide our parish community in faithful witness to your Divine Son. Amen."
+            &quot;{content.prayer}&quot;
           </p>
         </div>
       </div>
     </section>
   </main>
-);
+  );
+};
 
-export const DiocesePage = () => (
+export const DiocesePage = () => {
+  const { aboutContent } = useParishData();
+  const content = aboutContent.diocese;
+
+  return (
   <main className="inner-page">
     <section className="page-hero">
       <div className="page-hero__content container">
-        <h1 className="page-hero__title">Diocese of Mangalore</h1>
+          <h1 className="page-hero__title">{content.heroTitle}</h1>
         <div className="page-hero__breadcrumb">
           <Link to="/">Home</Link> <span>/</span> <span>About</span> <span>/</span> <span>Diocese</span>
         </div>
@@ -226,24 +239,25 @@ export const DiocesePage = () => (
 
     <section className="section section--white">
       <div className="container" style={{ maxWidth: '850px' }}>
-        <h2 className="section-heading__title" style={{ marginBottom: '1.5rem' }}>Diocese of Mangalore</h2>
+        <h2 className="section-heading__title" style={{ marginBottom: '1.5rem' }}>{content.sectionHeading}</h2>
         <p style={{ fontSize: '1.05rem', lineHeight: '1.8', marginBottom: '1.5rem' }}>
-          Our Lady of Loretto Church operates under the spiritual jurisdiction of the Roman Catholic Diocese of Mangalore, a historic Latin Rite diocese established in 1886.
+          {content.introduction}
         </p>
 
         <div className="grid-2" style={{ gap: '1.5rem' }}>
           <div style={{ background: 'var(--cream)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-beige)' }}>
             <Shield size={24} style={{ color: 'var(--gold-antique)', marginBottom: '0.5rem' }} />
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--brown-primary)' }}>Ecclesiastical Region</h4>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-body)', marginTop: '0.4rem' }}>Covering Dakshina Kannada and Udupi districts of Karnataka, with centuries of rich Catholic tradition.</p>
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--brown-primary)' }}>{content.regionTitle}</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-body)', marginTop: '0.4rem' }}>{content.regionDescription}</p>
           </div>
           <div style={{ background: 'var(--cream)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-beige)' }}>
             <Landmark size={24} style={{ color: 'var(--gold-antique)', marginBottom: '0.5rem' }} />
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--brown-primary)' }}>Pastoral Governance</h4>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-body)', marginTop: '0.4rem' }}>Guided by the Bishop of Mangalore, fostering pastoral care, education, and social service initiatives.</p>
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--brown-primary)' }}>{content.governanceTitle}</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-body)', marginTop: '0.4rem' }}>{content.governanceDescription}</p>
           </div>
         </div>
       </div>
     </section>
   </main>
-);
+  );
+};

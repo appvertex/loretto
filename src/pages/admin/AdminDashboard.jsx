@@ -5,6 +5,7 @@ import AdminLogin from './AdminLogin';
 import AdminPriestSection from './AdminPriestSection';
 import AdminMessagesSection from './AdminMessagesSection';
 import AdminHistorySection from './AdminHistorySection';
+import AdminAboutSection from './AdminAboutSection';
 import AdminCouncilSection from './AdminCouncilSection';
 import AdminOfficeSection from './AdminOfficeSection';
 import AdminGallerySection from './AdminGallerySection';
@@ -20,6 +21,7 @@ import {
   UserCheck,
   MessageSquareText,
   History,
+  BookOpen,
   Users,
   Building2,
   Image as ImageIcon,
@@ -87,6 +89,7 @@ const navItems = [
   { id: 'institutions', label: 'Parish Institutions (ಸಂಸ್ಥಾವೊ)', icon: <Building2 size={18} /> },
   { id: 'wards', label: 'Parish Wards (ವಾಡೆ)', icon: <HomeIcon size={18} /> },
   { id: 'history', label: 'Church History', icon: <History size={18} /> },
+  { id: 'about', label: 'About Pages', icon: <BookOpen size={18} /> },
 ];
 
 const AdminDashboard = () => {
@@ -450,6 +453,7 @@ const AdminDashboard = () => {
           {activeTab === 'events' && <AdminEventsSection />}
           {activeTab === 'news' && <AdminNewsSection />}
           {activeTab === 'history' && <AdminHistorySection />}
+          {activeTab === 'about' && <AdminAboutSection />}
           {activeTab === 'council' && <AdminCouncilSection />}
           {activeTab === 'organizations' && (
             <AdminOrganizationsSection
