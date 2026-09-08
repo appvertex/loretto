@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParishData } from '../../context/ParishContext';
 import ImageUploadField from '../../components/common/ImageUploadField';
 import { Plus, Trash2, Edit3, Save, CheckCircle2, ArrowUp, ArrowDown, X } from 'lucide-react';
@@ -14,6 +14,14 @@ const AdminHistorySection = () => {
   const [activeItemId, setActiveItemId] = useState(null);
   const [formState, setFormState] = useState({ year: '', era: '', title: '', description: '', image: '' });
   const [savedSuccess, setSavedSuccess] = useState('');
+
+  useEffect(() => {
+    setTimeline(historyTimeline);
+  }, [historyTimeline]);
+
+  useEffect(() => {
+    setFacts(parishFacts);
+  }, [parishFacts]);
 
   // Open Modal for Add
   const handleOpenAddModal = () => {
@@ -241,7 +249,7 @@ const AdminHistorySection = () => {
                   Cancel
                 </button>
                 <button type="submit" className="admin-btn admin-btn--primary">
-                  <Save size={15} /> {modalMode === 'add' ? 'Add Milestone' : 'Save Changes'}
+                  <Save size={15} /> {modalMode === 'add' ? 'Add Milestone' : 'Save Milestone'}
                 </button>
               </div>
             </form>
