@@ -267,12 +267,14 @@ export default {
         // crawlers often send Accept: */* instead of Accept: text/html.
         if (newsMatch && request.method === 'GET') {
           const metadata = await getNewsMetadata(env.DB, decodeURIComponent(newsMatch[1]));
-          const shell = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
-          if (metadata && shell.ok) {
+          const shell = await env.ASSETS.fetch(new Request(new URL('/', request.url), request));
+          const headers = new Headers(shell.headers);
+          headers.delete('Location');
+          if (metadata) {
             const html = injectNewsMetadata(await shell.text(), metadata, request.url);
             return new Response(html, {
               status: 200,
-              headers: new Headers(shell.headers),
+              headers,
             });
           }
         }
