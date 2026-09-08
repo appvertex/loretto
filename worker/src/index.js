@@ -281,12 +281,10 @@ export default {
         // a successful status so direct navigation and hard refresh work.
         if (isAdminRoute && request.method === 'GET') {
           const shell = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
-          if (shell.ok) {
-            return new Response(shell.body, {
-              status: 200,
-              headers: new Headers(shell.headers),
-            });
-          }
+          return new Response(shell.body, {
+            status: 200,
+            headers: new Headers(shell.headers),
+          });
         }
 
         let assetResponse = await env.ASSETS.fetch(request);
