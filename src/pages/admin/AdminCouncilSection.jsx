@@ -59,8 +59,8 @@ const AdminCouncilSection = () => {
 
   const handleDeleteMember = (id) => {
     const memberToDelete = council.find(m => m.id === id);
-    if (memberToDelete?.position?.includes('Ex-officio')) {
-      alert('The Parish Priest (Ex-officio President) entry is auto-managed via the Parish Priest admin section.');
+    if (memberToDelete?.id === 1) {
+      alert('The Parish Priest entry is auto-managed via the Parish Priest admin section.');
       return;
     }
 
@@ -95,23 +95,18 @@ const AdminCouncilSection = () => {
       {/* Member Cards Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
         {council.map((member) => {
-          const isExOfficio = member.position?.includes('Ex-officio') || member.id === 1;
+          const isAutoManaged = member.id === 1;
 
           return (
             <div
               key={member.id}
               style={{
-                background: isExOfficio ? 'linear-gradient(135deg, rgba(198,161,91,0.08) 0%, rgba(198,161,91,0.02) 100%)' : 'var(--cream)',
-                border: isExOfficio ? '2px solid var(--gold-antique)' : '1px solid var(--border-gold)',
+                background: isAutoManaged ? 'linear-gradient(135deg, rgba(198,161,91,0.08) 0%, rgba(198,161,91,0.02) 100%)' : 'var(--cream)',
+                border: isAutoManaged ? '2px solid var(--gold-antique)' : '1px solid var(--border-gold)',
                 borderRadius: 'var(--radius-md)',
                 padding: '1.25rem',
               }}
             >
-              {isExOfficio && (
-                <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--gold-antique)', fontWeight: 700, display: 'block', marginBottom: '0.5rem' }}>
-                  ✦ EX-OFFICIO PRESIDENT
-                </span>
-              )}
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                 <div style={{ width: '56px', height: '56px', borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--gold-antique)', backgroundColor: 'var(--border-beige)', flexShrink: 0 }}>
                   <img
@@ -136,7 +131,7 @@ const AdminCouncilSection = () => {
                 <button onClick={() => handleOpenEditModal(member)} className="admin-btn admin-btn--secondary" style={{ padding: '0.35rem 0.6rem', fontSize: '0.8rem' }}>
                   <Edit3 size={13} /> Edit
                 </button>
-                {!isExOfficio && (
+                {!isAutoManaged && (
                   <button onClick={() => handleDeleteMember(member.id)} className="admin-btn admin-btn--danger" style={{ padding: '0.35rem 0.6rem', fontSize: '0.8rem' }}>
                     <Trash2 size={13} /> Remove
                   </button>
@@ -170,12 +165,12 @@ const AdminCouncilSection = () => {
                     placeholder="Enter member name"
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                    disabled={formState.position?.includes('Ex-officio')}
+                    disabled={formState.id === 1}
                     required
                   />
-                  {formState.position?.includes('Ex-officio') && (
+                  {formState.id === 1 && (
                     <small style={{ color: 'var(--brown-muted)', display: 'block', marginTop: '0.2rem' }}>
-                      * Synchronized with Parish Priest Name.
+                      * Synchronized with the Parish Priest details.
                     </small>
                   )}
                 </div>
@@ -186,8 +181,9 @@ const AdminCouncilSection = () => {
                     type="text"
                     className="admin-form-control"
                     placeholder="e.g. Vice President / Secretary / Gurkar"
-                    value={formState.position}
+                    value={formState.id === 1 ? 'Parish Priest' : formState.position}
                     onChange={(e) => setFormState({ ...formState, position: e.target.value })}
+                    disabled={formState.id === 1}
                     required
                   />
                 </div>

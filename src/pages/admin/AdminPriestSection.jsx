@@ -131,7 +131,7 @@ const AdminPriestSection = () => {
           <div>
             <strong>Global Synchronization Enabled</strong>
             <p style={{ margin: '0.2rem 0 0', opacity: 0.9 }}>
-              Updating the name here automatically updates the Parish Priest page, Home Page Priest message banner, Parish Leadership cards, Parish Council Ex-officio President entry, and Church History facts table.
+              Updating the name here automatically updates the Parish Priest page, Home Page Priest message banner, Parish Leadership cards, Parish Council Parish Priest entry, and Church History facts table.
             </p>
           </div>
         </div>

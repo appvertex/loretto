@@ -171,7 +171,7 @@ export const ParishPriestPage = () => {
 
 export const ParishCouncilPage = () => {
   const { parishCouncil } = useParishData();
-  const president = parishCouncil.find((m) => m.position.includes('President')) || parishCouncil[0];
+  const president = parishCouncil.find((m) => m.id === 1 || m.position.includes('President')) || parishCouncil[0];
   const execMembers = parishCouncil.filter((m) => m.id !== president?.id);
 
   const commissions = [
@@ -241,7 +241,7 @@ export const ParishCouncilPage = () => {
                   onError={(e) => { e.target.src = `${import.meta.env.BASE_URL}images/priest-portrait.jpg`; }}
                 />
               </div>
-              <span className="council-role-badge">EX-OFFICIO PRESIDENT</span>
+              <span className="council-role-badge">Parish Priest</span>
               <h3 className="council-member-name">{president.name}</h3>
               <p className="council-member-position">Parish Priest</p>
             </div>

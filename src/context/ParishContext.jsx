@@ -77,14 +77,21 @@ const mergeAboutContent = (content = {}) => Object.keys(initialAboutContent).red
   },
 }), {});
 
+const normalizeLeadership = (value) => ({
+  ...value,
+  parishCouncil: (value.parishCouncil || []).map(member => (
+    member.id === 1 ? { ...member, position: 'Parish Priest' } : member
+  )),
+});
+
 export const ParishProvider = ({ children }) => {
   // 1. Leadership State
   const [leadership, setLeadership] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.LEADERSHIP);
-      return saved ? JSON.parse(saved) : initialLeadership;
+      return saved ? normalizeLeadership(JSON.parse(saved)) : normalizeLeadership(initialLeadership);
     } catch {
-      return initialLeadership;
+      return normalizeLeadership(initialLeadership);
     }
   });
 
@@ -252,7 +259,7 @@ export const ParishProvider = ({ children }) => {
     api.getSiteContent().then(({ content }) => {
       if (!isMounted || !content) return;
 
-      if (Object.hasOwn(content, CONTENT_KEYS.LEADERSHIP)) setLeadership(content[CONTENT_KEYS.LEADERSHIP]);
+      if (Object.hasOwn(content, CONTENT_KEYS.LEADERSHIP)) setLeadership(normalizeLeadership(content[CONTENT_KEYS.LEADERSHIP]));
       if (Object.hasOwn(content, CONTENT_KEYS.HISTORY_TIMELINE)) setHistoryTimeline(content[CONTENT_KEYS.HISTORY_TIMELINE]);
       if (Object.hasOwn(content, CONTENT_KEYS.PARISH_FACTS)) setParishFacts(content[CONTENT_KEYS.PARISH_FACTS]);
       if (Object.hasOwn(content, CONTENT_KEYS.OFFICE)) setOffice(content[CONTENT_KEYS.OFFICE]);
@@ -408,12 +415,13 @@ export const ParishProvider = ({ children }) => {
         return member;
       });
 
-      // Synchronize Parish Council Ex-Officio President
+      // Synchronize the Parish Council priest entry
       const updatedParishCouncil = prev.parishCouncil.map(member => {
-        if (member.position.includes('Ex-officio') || member.id === 1) {
+        if (member.id === 1 || member.position === 'Parish Priest') {
           return {
             ...member,
             name: fullNameWithPrefix,
+            position: 'Parish Priest',
             image: newPriest.image || member.image,
           };
         }

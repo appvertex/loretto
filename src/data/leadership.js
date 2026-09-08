@@ -39,7 +39,7 @@ export const leadership = {
     },
   ],
   parishCouncil: [
-    { id: 1, name: 'James D\'Souza', position: 'Parish Priest (Ex-officio President)', image: `${import.meta.env.BASE_URL}images/priest-portrait.jpg` },
+    { id: 1, name: 'James D\'Souza', position: 'Parish Priest', image: `${import.meta.env.BASE_URL}images/priest-portrait.jpg` },
     { id: 2, name: '[PLACEHOLDER]', position: 'President', image: `${import.meta.env.BASE_URL}images/hero-exterior.jpg` },
     { id: 3, name: '[PLACEHOLDER]', position: 'Vice President', image: `${import.meta.env.BASE_URL}images/hero-exterior.jpg` },
     { id: 4, name: '[PLACEHOLDER]', position: 'Secretary', image: `${import.meta.env.BASE_URL}images/hero-exterior.jpg` },
