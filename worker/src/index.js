@@ -92,7 +92,10 @@ function injectNewsMetadata(html, metadata, requestUrl) {
     `<meta name="twitter:description" content="${escapeHtml(description)}">`,
     `<meta name="twitter:image" content="${escapeHtml(imageUrl)}">`,
   ].join('\n    ');
-  return html.replace('</head>', `    ${tags}\n  </head>`);
+  const withoutExistingSocialTags = html
+    .replace(/<meta\b[^>]*\bproperty=["']og:[^"']+["'][^>]*>\s*/gi, '')
+    .replace(/<meta\b[^>]*\bname=["']twitter:[^"']+["'][^>]*>\s*/gi, '');
+  return withoutExistingSocialTags.replace('</head>', `    ${tags}\n  </head>`);
 }
 
 function bytesToHex(buffer) {
@@ -361,7 +364,6 @@ export default {
     <meta name="twitter:description" content="${escapeHtml(description)}">
     <meta name="twitter:image" content="${escapeHtml(imageUrl)}">
     <meta name="twitter:image:alt" content="${escapeHtml(metadata.title)}">
-    <meta http-equiv="refresh" content="0;url=${escapeHtml(articleUrl)}">
   </head>
   <body>
     <p>Opening <a href="${escapeHtml(articleUrl)}">${escapeHtml(metadata.title)}</a>...</p>
