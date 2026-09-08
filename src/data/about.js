@@ -25,7 +25,7 @@ export const initialAboutContent = {
     feastLabel: 'Annual Feast Day',
     feastDate: 'December 10',
     significanceHeading: 'The Significance of Our Lady of Loreto',
-    significanceParagraphOne: 'The title Our Lady of Loretto refers to the Holy House of Loreto, the sacred dwelling in Nazareth where the Virgin Mary was born, received the Annunciation from the Angel Gabriel, and raised Jesus Christ with St. Joseph.',
+    significanceParagraphOne: 'The title Our Lady of Loreto refers to the Holy House of Loreto, the sacred dwelling in Nazareth where the Virgin Mary was born, received the Annunciation from the Angel Gabriel, and raised Jesus Christ with St. Joseph.',
     significanceParagraphTwo: 'Our parish in Loretto, Mangalore invokes Mother Mary under this cherished Marian title, seeking her guidance, peace, and maternal intercession for all families in our community.',
     prayerHeading: 'Prayer to Our Lady of Loreto',
     prayer: 'O Holy Mother of God, Queen of Heaven and Patroness of Our Parish, look with love upon your children gathered under your mantle. Intercede for our families, protect our youth, comfort the sick, and guide our parish community in faithful witness to your Divine Son. Amen.',
