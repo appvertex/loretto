@@ -425,17 +425,33 @@ export const ParishProvider = ({ children }) => {
     }));
   };
 
-  // Helper 3: Update History Timeline
+  // Helper 3: Update Assistant Parish Priest
+  const updateAssistantPriest = (updatedAssistantData) => {
+    setLeadership(prev => ({
+      ...prev,
+      pastoralTeam: prev.pastoralTeam.map(member => {
+        if (member.id === 2 || member.position === 'Assistant Parish Priest') {
+          return {
+            ...member,
+            ...updatedAssistantData,
+          };
+        }
+        return member;
+      }),
+    }));
+  };
+
+  // Helper 4: Update History Timeline
   const updateHistoryTimeline = (newTimeline) => {
     setHistoryTimeline(newTimeline);
   };
 
-  // Helper 4: Update Parish Facts
+  // Helper 5: Update Parish Facts
   const updateParishFacts = (newFacts) => {
     setParishFacts(newFacts);
   };
 
-  // Helper 5: Update Parish Council
+  // Helper 6: Update Parish Council
   const updateParishCouncil = (newCouncilMembers) => {
     setLeadership(prev => ({
       ...prev,
@@ -443,7 +459,7 @@ export const ParishProvider = ({ children }) => {
     }));
   };
 
-  // Helper 6: Update Parish Office
+  // Helper 7: Update Parish Office
   const updateParishOffice = (updatedOffice) => {
     setOffice(prev => ({
       ...prev,
@@ -451,12 +467,12 @@ export const ParishProvider = ({ children }) => {
     }));
   };
 
-  // Helper 7: Update Gallery Images
+  // Helper 8: Update Gallery Images
   const updateGalleryImages = (newImages) => {
     setGalleryImages(newImages);
   };
 
-  // Helper 8: Ward Management Handlers
+  // Helper 9: Ward Management Handlers
   const updateWards = (newWards) => {
     setWards(newWards);
   };
@@ -588,7 +604,7 @@ export const ParishProvider = ({ children }) => {
     }));
   };
 
-  // Helper 9: Organization Management Handlers
+  // Helper 10: Organization Management Handlers
   const updateOrganizations = (newOrgs) => {
     setOrganizations(newOrgs);
   };
@@ -728,7 +744,7 @@ export const ParishProvider = ({ children }) => {
     }));
   };
 
-  // Helper 10: News & Announcements Handlers
+  // Helper 11: News & Announcements Handlers
   const addNewsItem = (newsData) => {
     const slug = newsData.slug || newsData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const dateObj = newsData.date ? new Date(newsData.date) : new Date();
@@ -773,7 +789,7 @@ export const ParishProvider = ({ children }) => {
     setNews(prev => prev.filter(n => n.id !== newsId));
   };
 
-  // Helper 11: Events Handlers
+  // Helper 12: Events Handlers
   const parseEventDateFields = (dateStr) => {
     if (!dateStr) return {};
     try {
@@ -830,7 +846,7 @@ export const ParishProvider = ({ children }) => {
     setEvents(prev => prev.filter(ev => ev.id !== eventId));
   };
 
-  // Helper 12: Newsletter Handlers
+  // Helper 13: Newsletter Handlers
   const parseNewsletterDate = (dateStr) => {
     if (!dateStr) return { year: new Date().getFullYear(), displayDate: '' };
     try {
@@ -1021,6 +1037,7 @@ export const ParishProvider = ({ children }) => {
         publishSiteContent,
         updateParishPriest,
         updatePriestMessages,
+        updateAssistantPriest,
         updateHistoryTimeline,
         updateParishFacts,
         updateParishCouncil,

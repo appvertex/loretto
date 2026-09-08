@@ -4,9 +4,23 @@ import { Mail, Clock, Phone, Sparkles, HeartHandshake, Calendar, Quote, Users, B
 import { useParishData } from '../context/ParishContext';
 import './ParishPages.css';
 
+const defaultAssistantBio = 'Assisting in the pastoral care, spiritual formation, and administrative guidance of Our Lady of Loretto Parish. Working alongside the Parish Priest in administering the Holy Sacraments, conducting liturgical celebrations, guiding parish youth and ministries, and serving our community family.';
+
+const defaultAssistantHighlights = [
+  {
+    title: 'Youth & Catechism',
+    subtitle: 'Spiritual Guidance',
+  },
+  {
+    title: 'Liturgical Services',
+    subtitle: 'Sacraments & Masses',
+  },
+];
+
 export const ParishPriestPage = () => {
   const { parishPriest, pastoralTeam } = useParishData();
-  const assistantPriest = pastoralTeam.find((m) => m.position === 'Assistant Parish Priest');
+  const assistantPriest = pastoralTeam.find((m) => m.id === 2 || m.position === 'Assistant Parish Priest') || {};
+  const assistantHighlights = assistantPriest.highlights?.length ? assistantPriest.highlights : defaultAssistantHighlights;
 
   return (
     <main className="inner-page">
@@ -105,26 +119,25 @@ export const ParishPriestPage = () => {
                 </div>
 
                 <div className="assistant-details-col">
-                  <h4 className="assistant-bio-heading">Pastoral Care & Ministry</h4>
+                  <h4 className="assistant-bio-heading">{assistantPriest.sectionHeading || 'Pastoral Care & Ministry'}</h4>
                   <p className="assistant-bio-text">
-                    Assisting in the pastoral care, spiritual formation, and administrative guidance of Our Lady of Loretto Parish. Working alongside the Parish Priest in administering the Holy Sacraments, conducting liturgical celebrations, guiding parish youth and ministries, and serving our community family.
+                    {assistantPriest.bio || defaultAssistantBio}
                   </p>
 
                   <div className="assistant-highlights-grid">
-                    <div className="highlight-item">
-                      <HeartHandshake size={18} className="highlight-icon" />
-                      <div>
-                        <strong>Youth & Catechism</strong>
-                        <span>Spiritual Guidance</span>
+                    {assistantHighlights.map((highlight, index) => (
+                      <div key={`${highlight.title || 'highlight'}-${index}`} className="highlight-item">
+                        {index === 0 ? (
+                          <HeartHandshake size={18} className="highlight-icon" />
+                        ) : (
+                          <Calendar size={18} className="highlight-icon" />
+                        )}
+                        <div>
+                          <strong>{highlight.title || 'Highlight title'}</strong>
+                          <span>{highlight.subtitle || 'Highlight subtitle'}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="highlight-item">
-                      <Calendar size={18} className="highlight-icon" />
-                      <div>
-                        <strong>Liturgical Services</strong>
-                        <span>Sacraments & Masses</span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>

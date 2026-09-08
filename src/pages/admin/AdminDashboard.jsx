@@ -45,7 +45,7 @@ import {
 import './AdminLayout.css';
 
 const parishSubItems = [
-  { id: 'priest', label: 'Parish Priest Name', icon: <UserCheck size={16} /> },
+  { id: 'priest', label: 'Parish Priest & Assistant Priest', icon: <UserCheck size={16} /> },
   { id: 'messages', label: 'Priest Messages', icon: <MessageSquareText size={16} /> },
   { id: 'council', label: 'Parish Council', icon: <Users size={16} /> },
   { id: 'office', label: 'Parish Office', icon: <Building2 size={16} /> },
