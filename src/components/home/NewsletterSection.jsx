@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
 import { FileText, Download, Eye } from 'lucide-react';
 import { useParishData } from '../../context/ParishContext';
-import { newsletters as initialNewsletters } from '../../data/newsletter';
 import './NewsletterSection.css';
 
 const NewsletterSection = () => {
-  const { newsletters = initialNewsletters } = useParishData();
+  const { newsletters = [] } = useParishData();
 
-  // Find featured issue or default to first
-  const featured = newsletters.find(n => n.featured) || newsletters[0] || {
-    title: 'Parish Newsletter',
-    edition: 'Vol. 1, Issue 1',
-    displayDate: '2026',
-    description: 'Parish monthly newsletter.',
-    image: `${import.meta.env.BASE_URL}images/newsletter-cover.jpg`,
-    pdfUrl: '#',
-    readUrl: '#',
-  };
+  const featured = newsletters.find(n => n.featured) || newsletters[0] || null;
 
   // Derive unique years dynamically
   const availableYears = [...new Set(newsletters.map(n => n.year).filter(Boolean))].sort((a, b) => b - a);
@@ -81,9 +71,7 @@ const NewsletterSection = () => {
                   {year}
                 </button>
               ))
-            ) : (
-              <button className="newsletter__year-btn active">{new Date().getFullYear()}</button>
-            )}
+            ) : null}
           </div>
 
           <div className="newsletter__archive-grid">
@@ -102,7 +90,7 @@ const NewsletterSection = () => {
               ))
             ) : (
               <p style={{ gridColumn: '1 / -1', color: 'var(--brown-muted)', textAlign: 'center', padding: '1.5rem 0' }}>
-                No archived newsletter editions found for {selectedYear}.
+                No newsletter editions have been published yet.
               </p>
             )}
           </div>
