@@ -104,12 +104,12 @@ const HomePage = () => {
                 </div>
 
                 <h3 className="bento-featured__title">
-                  <Link to={`/news#${featured.slug}`}>{featured.title}</Link>
+                  <Link to={`/news/${featured.slug}`}>{featured.title}</Link>
                 </h3>
 
                 <p className="bento-featured__excerpt">{featured.excerpt}</p>
 
-                <Link to={`/news#${featured.slug}`} className="bento-btn-primary">
+                <Link to={`/news/${featured.slug}`} className="bento-btn-primary">
                   <span>Read Full Story</span>
                   <ArrowRight size={15} aria-hidden="true" />
                 </Link>
@@ -142,12 +142,12 @@ const HomePage = () => {
                     </div>
 
                     <h4 className="bento-side__title">
-                      <Link to={`/news#${item.slug}`}>{item.title}</Link>
+                      <Link to={`/news/${item.slug}`}>{item.title}</Link>
                     </h4>
 
                     <p className="bento-side__excerpt">{item.excerpt}</p>
 
-                    <Link to={`/news#${item.slug}`} className="bento-link-more">
+                    <Link to={`/news/${item.slug}`} className="bento-link-more">
                       <span>Read More</span>
                       <ChevronRight size={14} aria-hidden="true" />
                     </Link>

@@ -12,7 +12,7 @@ import { OurParishPage, HistoryPage, PatronessPage, DiocesePage } from './pages/
 import { ParishPriestPage, ParishCouncilPage, WardsPage, ParishOfficePage } from './pages/ParishPages';
 import { MassTimingsPage, SacramentsPage, CatechismPage, PrayerPage } from './pages/FaithPages';
 import OrganizationsPage from './pages/OrganizationsPage';
-import { NewsPage, EventsPage, GalleryPage, VideosPage, NewsletterPage } from './pages/MediaPages';
+import { NewsPage, NewsArticlePage, EventsPage, GalleryPage, VideosPage, NewsletterPage } from './pages/MediaPages';
 import { ContactPage, NotFoundPage } from './pages/ContactPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
@@ -67,6 +67,7 @@ const AppContent = () => {
 
         {/* News & Events */}
         <Route path="/news" element={<NewsPage />} />
+        <Route path="/news/:slug" element={<NewsArticlePage />} />
         <Route path="/events" element={<EventsPage />} />
 
         {/* Obituary */}

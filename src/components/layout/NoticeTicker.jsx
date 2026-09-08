@@ -25,7 +25,7 @@ const NoticeTicker = () => {
             <li key={`${item.id}-${idx}`} className="notice-ticker__item">
               <span className="notice-ticker__category">{item.category}</span>
               <Link
-                to={`/news#${item.slug}`}
+                to={`/news/${item.slug}`}
                 className="notice-ticker__text"
                 tabIndex={idx < activeNews.length ? 0 : -1}
               >

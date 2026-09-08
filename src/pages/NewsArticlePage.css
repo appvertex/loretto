@@ -1,0 +1,119 @@
+.news-article-page {
+  background: var(--bg-ivory);
+}
+
+.news-article {
+  padding-top: 2rem;
+  padding-bottom: 6rem;
+}
+
+.news-article__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+  color: var(--burgundy-primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.news-article__back:hover {
+  color: var(--gold-antique);
+}
+
+.news-article__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+.news-article__media {
+  overflow: hidden;
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-md);
+  background: var(--cream-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.news-article__media img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.news-article__content {
+  padding: 0.5rem 0;
+}
+
+.news-article__meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.news-article__category {
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radius-full);
+  background: var(--burgundy-primary);
+  color: var(--gold-light);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.news-article__date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.news-article__content h2 {
+  margin-bottom: 1rem;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+
+.news-article__excerpt {
+  margin-bottom: 1.4rem;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.news-article__body {
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--border-gold);
+}
+
+.news-article__body p {
+  margin-bottom: 1rem;
+  white-space: pre-line;
+}
+
+.news-article__missing {
+  min-height: 45vh;
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  text-align: center;
+}
+
+.news-article__missing h1 {
+  margin-bottom: 0.75rem;
+}
+
+.news-article__missing p {
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 780px) {
+  .news-article__layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

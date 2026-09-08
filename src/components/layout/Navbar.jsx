@@ -131,7 +131,7 @@ const Navbar = () => {
                 <li key={`${item.id}-${idx}`} className="navbar__ticker-item">
                   <span className="navbar__ticker-cat">{item.category}</span>
                   <Link
-                    to={`/news#${item.slug}`}
+                    to={`/news/${item.slug}`}
                     className="navbar__ticker-text"
                     tabIndex={idx < news.length ? 0 : -1}
                   >

@@ -47,12 +47,12 @@ const LatestNewsSection = () => {
                 </div>
 
                 <h3 className="news-card__title">
-                  <Link to={`/news#${item.slug}`}>{item.title}</Link>
+                  <Link to={`/news/${item.slug}`}>{item.title}</Link>
                 </h3>
                 <p className="news-card__excerpt">{item.excerpt}</p>
 
                 <div className="news-card__footer">
-                  <Link to={`/news#${item.slug}`} className="news-card__read-more">
+                  <Link to={`/news/${item.slug}`} className="news-card__read-more">
                     <span>Read Announcement</span>
                     <ArrowRight size={14} className="news-card__arrow" />
                   </Link>
