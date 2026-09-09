@@ -37,6 +37,7 @@ const CONTENT_KEYS = new Set([
   'institutions',
   'siteSettings',
   'aboutContent',
+  'massTimes',
 ]);
 
 const fallbackNewsMetadata = {

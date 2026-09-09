@@ -409,6 +409,7 @@ export const ParishProvider = ({ children }) => {
       [CONTENT_KEYS.INSTITUTIONS, institutions],
       [CONTENT_KEYS.SITE_SETTINGS, siteSettings],
       [CONTENT_KEYS.ABOUT, aboutContent],
+      [CONTENT_KEYS.MASS_TIMES, massTimes],
     ];
 
     const results = await Promise.all(
