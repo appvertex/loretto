@@ -625,6 +625,27 @@
   padding-left: 2.25rem;
 }
 
+.navbar__mobile-mass-btn {
+  display: block;
+  margin: 1.25rem 1.5rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--gold-antique);
+  border-radius: 8px;
+  background: var(--burgundy-primary);
+  color: var(--gold-light);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-decoration: none;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.navbar__mobile-mass-btn:hover {
+  background: var(--burgundy-dark);
+  transform: translateY(-1px);
+}
+
 .navbar__mobile-drawer-brand {
   display: flex;
   align-items: center;

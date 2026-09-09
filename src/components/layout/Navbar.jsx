@@ -299,6 +299,13 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
+          <Link
+            to="/faith/mass-timings"
+            className="navbar__mobile-mass-btn"
+            onClick={() => setIsMobileOpen(false)}
+          >
+            MASS TIMINGS
+          </Link>
         </div>
       </div>
 
