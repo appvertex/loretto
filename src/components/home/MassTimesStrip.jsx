@@ -1,10 +1,11 @@
 ﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, ArrowRight } from 'lucide-react';
-import { massTimes } from '../../data/massTimes';
+import { useParishData } from '../../context/ParishContext';
 import './MassTimesStrip.css';
 
 const MassTimesStrip = () => {
+  const { massTimes } = useParishData();
   return (
     <div className="mass-strip" aria-label="Mass times quick reference">
       <div className="container mass-strip__inner">

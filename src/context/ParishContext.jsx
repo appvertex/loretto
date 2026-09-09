@@ -11,6 +11,7 @@ import { obituaries as initialObituaries } from '../data/obituaries';
 import { initialInstitutions } from '../data/institutions';
 import { initialSiteSettings } from '../data/siteSettings';
 import { initialAboutContent } from '../data/about';
+import { massTimes as initialMassTimes } from '../data/massTimes';
 import { api } from '../api/client';
 
 const ParishContext = createContext(null);
@@ -30,6 +31,7 @@ const STORAGE_KEYS = {
   INSTITUTIONS: 'loretto_parish_institutions',
   SITE_SETTINGS: 'loretto_site_settings',
   ABOUT: 'loretto_about_content',
+  MASS_TIMES: 'loretto_mass_times',
   AUTH: 'loretto_admin_auth',
 };
 
@@ -48,6 +50,7 @@ const CONTENT_KEYS = {
   INSTITUTIONS: 'institutions',
   SITE_SETTINGS: 'siteSettings',
   ABOUT: 'aboutContent',
+  MASS_TIMES: 'massTimes',
 };
 
 const initialOfficeData = {
@@ -235,7 +238,17 @@ export const ParishProvider = ({ children }) => {
     }
   });
 
-  // 15. Admin Authentication State
+  // 15. Mass timings
+  const [massTimes, setMassTimes] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.MASS_TIMES);
+      return saved ? JSON.parse(saved) : initialMassTimes;
+    } catch {
+      return initialMassTimes;
+    }
+  });
+
+  // 16. Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
     try {
       return sessionStorage.getItem(STORAGE_KEYS.AUTH) === 'true' && api.hasAdminSession();
@@ -286,6 +299,7 @@ export const ParishProvider = ({ children }) => {
       if (Object.hasOwn(content, CONTENT_KEYS.ABOUT)) {
         setAboutContent(mergeAboutContent(content[CONTENT_KEYS.ABOUT]));
       }
+      if (Object.hasOwn(content, CONTENT_KEYS.MASS_TIMES)) setMassTimes(content[CONTENT_KEYS.MASS_TIMES]);
     }).catch((err) => {
       console.warn('[Loretto API] Failed to load shared D1 content. Using local content.', err);
     }).finally(() => {
@@ -353,6 +367,10 @@ export const ParishProvider = ({ children }) => {
   useEffect(() => {
     saveLocalAndRemote(STORAGE_KEYS.ABOUT, CONTENT_KEYS.ABOUT, aboutContent);
   }, [aboutContent, saveLocalAndRemote]);
+
+  useEffect(() => {
+    saveLocalAndRemote(STORAGE_KEYS.MASS_TIMES, CONTENT_KEYS.MASS_TIMES, massTimes);
+  }, [massTimes, saveLocalAndRemote]);
 
   // Auth helper methods
   const loginAdmin = async (passcode) => {
@@ -1029,6 +1047,10 @@ export const ParishProvider = ({ children }) => {
     setAboutContent(prev => mergeAboutContent({ ...prev, ...updatedContent }));
   };
 
+  const updateMassTimes = (updatedMassTimes) => {
+    setMassTimes(updatedMassTimes);
+  };
+
   // Helper 16: Reset All Data to Defaults
   const resetToDefaults = () => {
     setLeadership(initialLeadership);
@@ -1045,6 +1067,7 @@ export const ParishProvider = ({ children }) => {
     setInstitutions(initialInstitutions);
     setSiteSettings(initialSiteSettings);
     setAboutContent(initialAboutContent);
+    setMassTimes(initialMassTimes);
 
     localStorage.removeItem(STORAGE_KEYS.LEADERSHIP);
     localStorage.removeItem(STORAGE_KEYS.HISTORY_TIMELINE);
@@ -1060,6 +1083,7 @@ export const ParishProvider = ({ children }) => {
     localStorage.removeItem(STORAGE_KEYS.INSTITUTIONS);
     localStorage.removeItem(STORAGE_KEYS.SITE_SETTINGS);
     localStorage.removeItem(STORAGE_KEYS.ABOUT);
+    localStorage.removeItem(STORAGE_KEYS.MASS_TIMES);
   };
 
   return (
@@ -1083,6 +1107,7 @@ export const ParishProvider = ({ children }) => {
         institutions,
         siteSettings,
         aboutContent,
+        massTimes,
         isAdminAuthenticated,
         loginAdmin,
         logoutAdmin,
@@ -1136,6 +1161,7 @@ export const ParishProvider = ({ children }) => {
         deleteInstitution,
         updateSiteSettings,
         updateAboutContent,
+        updateMassTimes,
         resetToDefaults,
       }}
     >

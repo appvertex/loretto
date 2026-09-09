@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { Clock } from 'lucide-react';
-import { massTimes } from '../../data/massTimes';
+import { useParishData } from '../../context/ParishContext';
 import './MassScheduleSection.css';
 
 const ScheduleRow = ({ day, time, note }) => (
@@ -12,6 +12,7 @@ const ScheduleRow = ({ day, time, note }) => (
 );
 
 const MassScheduleSection = () => {
+  const { massTimes } = useParishData();
   const weekdaySchedule = massTimes.weekday.map((item) => ({
     day: item.day,
     time: item.time,

@@ -17,6 +17,7 @@ import AdminNewsletterSection from './AdminNewsletterSection';
 import AdminObituarySection from './AdminObituarySection';
 import AdminInstitutionsSection from './AdminInstitutionsSection';
 import AdminSiteSettingsSection from './AdminSiteSettingsSection';
+import AdminMassTimingsSection from './AdminMassTimingsSection';
 import {
   UserCheck,
   MessageSquareText,
@@ -41,7 +42,8 @@ import {
   Church,
   Radio,
   Flame,
-  Settings
+  Settings,
+  Clock
 } from 'lucide-react';
 import './AdminLayout.css';
 
@@ -69,6 +71,7 @@ const aboutSubItems = [
 
 const navItems = [
   { id: 'siteSettings', label: 'Site Settings', icon: <Settings size={18} /> },
+  { id: 'massTimes', label: 'Mass Timings', icon: <Clock size={18} /> },
   {
     id: 'parish',
     label: 'Parish Details (ಫಿರ್ಗಜ್)',
@@ -526,6 +529,7 @@ const AdminDashboard = () => {
           {activeTab === 'obituary' && <AdminObituarySection />}
           {activeTab === 'institutions' && <AdminInstitutionsSection />}
           {activeTab === 'siteSettings' && <AdminSiteSettingsSection />}
+          {activeTab === 'massTimes' && <AdminMassTimingsSection />}
         </div>
       </main>
 
