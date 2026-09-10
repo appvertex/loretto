@@ -303,9 +303,21 @@ export default {
           });
         }
 
+        // All public React routes need a successful HTML response for search
+        // crawlers, including requests that use Accept: */*.
+        const pathnameHasFileExtension = pathname.includes('.');
+        if (request.method === 'GET' && pathname !== '/' && !pathnameHasFileExtension) {
+          const shell = await env.ASSETS.fetch(new Request(new URL('/', request.url), request));
+          const headers = new Headers(shell.headers);
+          headers.delete('Location');
+          return new Response(shell.body, {
+            status: 200,
+            headers,
+          });
+        }
+
         let assetResponse = await env.ASSETS.fetch(request);
         const acceptsHtml = request.headers.get('Accept')?.includes('text/html');
-        const pathnameHasFileExtension = pathname.includes('.');
 
         // Serve the SPA shell for client-side routes on direct browser requests.
         if (assetResponse.status === 404 && request.method === 'GET' && acceptsHtml && !pathnameHasFileExtension) {
