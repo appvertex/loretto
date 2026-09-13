@@ -307,7 +307,8 @@ import WardsPage from './WardsPage';
 export { WardsPage };
 
 export const ParishOfficePage = () => {
-  const { office } = useParishData();
+  const { office, siteSettings } = useParishData();
+  const officePhone = siteSettings.officePhone || '+91 824 2345678';
 
   return (
     <main className="inner-page">
@@ -342,7 +343,7 @@ export const ParishOfficePage = () => {
               <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', color: 'var(--brown-primary)', marginBottom: '0.75rem' }}>Office Contact</h4>
               <p style={{ fontSize: '0.9rem', lineHeight: '1.8' }}>
                 <strong>Address:</strong> {office.address}<br />
-                <strong>Phone:</strong> {office.phone}<br />
+                <strong>Phone:</strong> {officePhone}<br />
                 <strong>Email:</strong> {office.email}
               </p>
             </div>

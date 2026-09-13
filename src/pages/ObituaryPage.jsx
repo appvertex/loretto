@@ -69,7 +69,9 @@ const MemorialPhoto = ({ photo, name }) => {
 };
 
 const ObituaryPage = () => {
-  const { obituaries, wards } = useParishData();
+  const { obituaries, wards, siteSettings } = useParishData();
+  const officePhone = siteSettings.officePhone || '+91 824 2345678';
+  const officePhoneHref = `tel:${officePhone.replace(/[^+\d]/g, '')}`;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedWard, setSelectedWard] = useState('all');
@@ -277,8 +279,8 @@ const ObituaryPage = () => {
               <Link to="/parish/office" className="btn btn--gold">
                 <Church size={15} /> Contact Parish Office
               </Link>
-              <a href="tel:+918242345678" className="btn btn--outline" style={{ color: 'var(--gold-light)', borderColor: 'var(--gold-antique)' }}>
-                <PhoneCall size={15} /> Call Office (+91 824 2345678)
+              <a href={officePhoneHref} className="btn btn--outline" style={{ color: 'var(--gold-light)', borderColor: 'var(--gold-antique)' }}>
+                <PhoneCall size={15} /> Call Office ({officePhone})
               </a>
             </div>
           </div>

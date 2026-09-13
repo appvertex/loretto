@@ -27,7 +27,7 @@ const AdminOfficeSection = () => {
       <div className="admin-card__header">
         <h2 className="admin-card__title">Parish Office & Contact Information</h2>
         <p className="admin-card__subtitle">
-          Manage parish office working hours, contact numbers, email address, and office guidance notes.
+          Manage parish office working hours, email address, and office guidance notes. Update the public office phone number in Site Settings.
         </p>
       </div>
 
@@ -53,20 +53,6 @@ const AdminOfficeSection = () => {
         </div>
 
         <div className="admin-form-grid">
-          <div className="admin-form-group">
-            <label htmlFor="phone">Parish Office Phone</label>
-            <input
-              type="text"
-              id="phone"
-              name="phone"
-              className="admin-form-control"
-              placeholder="+91 824 2345678"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
           <div className="admin-form-group">
             <label htmlFor="email">Parish Office Email</label>
             <input

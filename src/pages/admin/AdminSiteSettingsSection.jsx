@@ -114,7 +114,7 @@ const AdminSiteSettingsSection = () => {
       <div className="admin-card__header">
         <h2 className="admin-card__title">Site Settings</h2>
         <p className="admin-card__subtitle">
-          Manage the public church name and homepage hero slides. Changes are saved to the shared database.
+          Manage public church details, navigation, and homepage hero slides. Changes are saved to the shared database.
         </p>
       </div>
 
@@ -146,6 +146,18 @@ const AdminSiteSettingsSection = () => {
               value={formData.location || ''}
               onChange={event => updateField('location', event.target.value)}
               placeholder="Loretto, Bantwal"
+            />
+          </div>
+          <div className="admin-form-group">
+            <label htmlFor="site-office-phone">Parish Office Phone</label>
+            <input
+              id="site-office-phone"
+              type="tel"
+              className="admin-form-control"
+              value={formData.officePhone || ''}
+              onChange={event => updateField('officePhone', event.target.value)}
+              placeholder="+91 824 2345678"
+              required
             />
           </div>
         </div>

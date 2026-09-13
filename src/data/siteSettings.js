@@ -3,6 +3,7 @@ const asset = (name) => `${import.meta.env.BASE_URL}images/${name}`;
 export const initialSiteSettings = {
   churchName: 'Our Lady of Loretto Church',
   location: 'Loretto, Bantwal',
+  officePhone: '+91 824 2345678',
   navigationVisibility: {
     home: true,
     about: true,

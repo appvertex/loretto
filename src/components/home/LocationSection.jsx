@@ -7,6 +7,7 @@ import './LocationSection.css';
 const LocationSection = () => {
   const { office, siteSettings } = useParishData();
   const churchName = siteSettings.churchName || 'Our Lady of Loretto Church';
+  const officePhone = siteSettings.officePhone || '+91 824 2345678';
 
   return (
     <section className="location-section section section--white" aria-label="Our Location">
@@ -64,7 +65,7 @@ const LocationSection = () => {
                   <Phone className="location-info-card__icon" />
                   <div>
                     <strong>Parish Office Phone</strong>
-                    <p>{office.phone}</p>
+                    <p>{officePhone}</p>
                   </div>
                 </li>
                 <li>
