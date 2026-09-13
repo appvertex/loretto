@@ -88,10 +88,22 @@ const Footer = () => {
 
           {/* Social Icons */}
           <div className="footer__social">
-            <a href="#" className="footer__social-link" aria-label="Facebook" rel="noopener noreferrer">
+            <a
+              href="https://www.facebook.com/p/Our-Lady-of-Loretto-church-Thurbenth-100068651056359/"
+              className="footer__social-link"
+              aria-label="Facebook"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <FacebookIcon />
             </a>
-            <a href="#" className="footer__social-link" aria-label="YouTube" rel="noopener noreferrer">
+            <a
+              href="https://www.youtube.com/@ourladyoflorettochurchlore4228"
+              className="footer__social-link"
+              aria-label="YouTube"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <YoutubeIcon />
             </a>
           </div>
