@@ -1,17 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Calendar, ArrowRight, Bell } from 'lucide-react';
+import { Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { news as fallbackNews } from '../../data/news';
 import { useParishData } from '../../context/ParishContext';
 import './LatestNewsSection.css';
 
+const NEWS_PER_PAGE = 6;
+
 const LatestNewsSection = () => {
   const { news } = useParishData();
+  const [currentPage, setCurrentPage] = useState(1);
   const activeNews = (news && news.length > 0) ? news : fallbackNews;
   const latestNews = [...activeNews].sort(
     (a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()
   );
+  const totalPages = Math.max(1, Math.ceil(latestNews.length / NEWS_PER_PAGE));
+  const pageNews = latestNews.slice(
+    (currentPage - 1) * NEWS_PER_PAGE,
+    currentPage * NEWS_PER_PAGE
+  );
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
 
   return (
     <section className="latest-news section section--cream" aria-label="Latest News & Announcements">
@@ -24,7 +36,7 @@ const LatestNewsSection = () => {
         </div>
 
         <div className="latest-news__grid">
-          {latestNews.slice(0, 3).map((item, index) => (
+          {pageNews.map((item, index) => (
             <motion.article
               key={item.id}
               className="news-card"
@@ -65,12 +77,29 @@ const LatestNewsSection = () => {
           ))}
         </div>
 
-        <div className="latest-news__cta">
-          <Link to="/news" className="btn btn--outline">
-            <Bell size={16} /> Browse All News
-            <ArrowRight size={16} aria-hidden="true" />
-          </Link>
-        </div>
+        {totalPages > 1 && (
+          <nav className="latest-news__pagination" aria-label="News pagination">
+            <button
+              type="button"
+              className="latest-news__page-button"
+              onClick={() => setCurrentPage((page) => page - 1)}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={16} aria-hidden="true" /> Previous
+            </button>
+            <span className="latest-news__page-status" aria-live="polite">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              type="button"
+              className="latest-news__page-button"
+              onClick={() => setCurrentPage((page) => page + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next <ChevronRight size={16} aria-hidden="true" />
+            </button>
+          </nav>
+        )}
       </div>
     </section>
   );
